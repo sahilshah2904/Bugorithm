@@ -1,14 +1,20 @@
 # Project handoff
 
-## Current milestone
+## Session recap · 9 November 2026
 
-`v0.0.3` gives the preview a dark full-width layout and five separate pages. Last shuttle remains the sample in Algo Fixes. Python Learn has eight lessons with runnable examples and exercises. The 100 Questions page lists practice references. CodeMirror handles the debugging editor, Pyodide runs both kinds of Python code off the main thread, and Anime.js drives interface motion.
+- **Plan and repository.** Set the ten-phase roadmap around untimed, story-based debugging, with Python Learn alongside it and interview practice as a separate track. Created the public repository, contributor and release guides, and automated checks. `v0.0.1` captures the setup.
+- **First playable preview.** Published Last Shuttle to GitHub Pages in `v0.0.2`. The editor preserves drafts and locks the scaffold outside the marked region. Python runs in a browser worker. Run the public examples or custom input, then use **Check fix** to see the first failing sample case. A full pass opens a walkthrough and confetti.
+- **Dark workspace and learning map.** Published `v0.0.3` with separate Algo Fixes, Python Learn, 100 Questions, About, and Settings pages. Added larger Inter and IBM Plex Mono text, a full-width terminal theme, and Anime.js transitions. Python Learn has eight levels with hover and focus previews, runnable examples, exercises, and locally saved completion. The question library contains 100 searchable LeetCode links. Settings saves text size and motion locally.
+
+The `v0.0.3` app release is tagged at commit `1aa92d8`. Browser testing on the deployed site covered all eight exercises, map scrolling, phone layout, saved progress and preferences, library search, and the original debugging flow. [Live preview](https://sahilshah2904.github.io/Bugorithm/) · [Release](https://github.com/sahilshah2904/Bugorithm/releases/tag/v0.0.3) · [GitHub Actions](https://github.com/sahilshah2904/Bugorithm/actions/runs/42625016398)
 
 ## Reproduce and continue
 
-- Run the sample with the commands in the [README](../README.md). The [web app README](../apps/web/README.md) lists the repair flow to verify.
-- Review the learning map and the lesson format before expanding the curriculum. The private judge is the next grading milestone. [Roadmap](ROADMAP.md)
-- Keep real private tests outside this repository. Use synthetic fixtures for local integration checks.
+Start from `main` for new work or use the README commands to reproduce the tagged preview. The web app README lists the repair and lesson flows to try. [Repository README](../README.md) · [Web app README](../apps/web/README.md)
+
+1. **Next coding task: private grading for Last Shuttle.** Define the Submit request and response and wire one challenge to the judge. Run hidden cases in a fixed order, stop at the first failure, and return only that case's position, failure type, and input. Let the learner load the input into Custom input and retry. Verify failure, retry, and the full pass in one browser flow. Choose where the judge runs. Keep real hidden cases outside the public repository and use synthetic fixtures for integration checks. [Judge README](../services/judge/README.md)
+2. **Expand the core experience.** Use feedback on the layout and lesson format to add more focused Python levels. Build toward the first 10 original debugging challenges and add random selection with draft recovery.
+3. **Expand interview practice separately.** Start from the existing 100 references and add original in-app Fix and Build exercises in batches. [Roadmap](ROADMAP.md)
 
 ## Update this handoff
 

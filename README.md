@@ -1,8 +1,14 @@
 # Bugorithm
 
-Bugorithm is an untimed Python 3 debugging lab. Draw a short challenge, read the backstory, repair the marked code, and run public examples or your own input. On submission, the judge stops at the first failing private test and reveals that input so you can reproduce the failure. A successful fix unlocks a walkthrough and a brief celebration.
+Bugorithm is an untimed Python 3 lab for learning concepts and repairing short programs. The current preview uses a full-width dark layout with larger text and five pages. [Open Bugorithm](https://sahilshah2904.github.io/Bugorithm/) · [v0.0.3 release](https://github.com/sahilshah2904/Bugorithm/releases/tag/v0.0.3)
 
-The playable preview includes a story-based debugging challenge, eight runnable Python lessons, and a separate interview question library. [Open Bugorithm](https://sahilshah2904.github.io/Bugorithm/)
+- **Algo Fixes** includes the Last Shuttle challenge. Edit between the markers, run examples or custom input, and check your fix against five browser-side sample cases. The first failure exposes its input. A full pass opens the walkthrough and celebration.
+- **Python Learn** offers eight levels from syntax through loops. Open a level from the animated map to run an example and check a short exercise. Completion is saved in your browser.
+- **100 Questions** lists searchable, filterable links to interview problems. **About** introduces the project and **Settings** saves text size and motion preferences.
+
+## What's next
+
+Connect a private judge to the Last Shuttle flow so Submit can stop at the first hidden failure and return just that case's input for retry. Then grow the original debugging challenge bank, add random selection, and extend Python Learn one topic at a time. The interview library is a separate later track for in-app Fix and Build practice. [Project handoff](docs/HANDOFF.md) · [Roadmap](docs/ROADMAP.md)
 
 ## Reproduce the current milestone
 
