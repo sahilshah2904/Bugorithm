@@ -2,12 +2,12 @@
 
 ## Current milestone
 
-`v0.0.1` is the repository setup milestone. The product is an untimed debugging lab. The core experience is a random, story-based Python challenge, with two public examples and custom inputs. On Submit, private grading stops at the first failure and returns that input for retry. Passing the full suite unlocks a walkthrough and a 5–6 second celebration. The separate interview library follows the core release.
+`v0.0.2` is the first playable sample. Last shuttle supports locked code regions, two public examples, custom inputs, a five-case browser check, a fix walkthrough, and a 5–6 second celebration. CodeMirror handles editing, Pyodide runs Python off the main thread, and Anime.js drives interface motion.
 
 ## Reproduce and continue
 
-- Check out the milestone and run the verification command in the [README](../README.md).
-- Use the [roadmap](ROADMAP.md) to pick the next step. Review the desktop and phone workspace design, then build one complete challenge before expanding the content.
+- Run the sample with the commands in the [README](../README.md). The [web app README](../apps/web/README.md) lists the repair flow to verify.
+- Review the visual direction and editing flow in the published sample. Use that feedback to refine the first challenge before adding the private judge and more content. [Roadmap](ROADMAP.md)
 - Keep real private tests outside this repository. Use synthetic fixtures for local integration checks.
 
 ## Update this handoff

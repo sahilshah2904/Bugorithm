@@ -8,6 +8,7 @@
 .env.*
 !.env.example
 /services/judge/private/
+/apps/web/public/python/
 
 # Dependencies, build output and test artifacts
 node_modules/
