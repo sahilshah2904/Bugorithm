@@ -1,0 +1,23 @@
+# Local research and source material
+/[Ee]xtra_[Rr]eference/
+/[Ll]ecture_[Mm]aterial/
+/[Pp]lanning/
+
+# Local configuration and private judge data
+.env
+.env.*
+!.env.example
+/services/judge/private/
+
+# Dependencies, build output and test artifacts
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+__pycache__/
+.venv/
+
+# OS files
+.DS_Store
+Thumbs.db
