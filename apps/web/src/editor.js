@@ -17,23 +17,24 @@ function readDraft() {
 }
 
 const syntax = HighlightStyle.define([
-  { tag: tags.keyword, color: '#ceb1ff' },
-  { tag: tags.comment, color: '#a5a1bd', fontStyle: 'italic' },
-  { tag: tags.number, color: '#f1ba87' },
+  { tag: tags.keyword, color: '#c3f786' },
+  { tag: tags.comment, color: '#9baea8', fontStyle: 'italic' },
+  { tag: tags.number, color: '#f6c294' },
   { tag: tags.string, color: '#b5e8bb' },
-  { tag: tags.function(tags.variableName), color: '#a6dfff' },
+  { tag: tags.function(tags.variableName), color: '#99e8e0' },
 ]);
 
 const theme = EditorView.theme({
-  '&': { backgroundColor: '#181c2c', color: '#ece9fb', fontSize: '13px' },
-  '&.cm-focused': { outline: '2px solid #b6a0ff', outlineOffset: '-2px' },
-  '.cm-content': { fontFamily: '"DM Mono", ui-monospace, monospace', padding: '13px 0', caretColor: '#fff' },
-  '.cm-line': { padding: '0 10px', lineHeight: '1.68' },
-  '.cm-gutters': { backgroundColor: '#181c2c', color: '#a19bb7', border: 0 },
-  '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: '#2a2d45' },
+  '&': { backgroundColor: '#0b1419', color: '#eef5f3', fontSize: '.94rem' },
+  '&.cm-focused': { outline: '2px solid #b5fa70', outlineOffset: '-2px' },
+  '.cm-scroller': { lineHeight: '1.65' },
+  '.cm-content': { fontFamily: 'var(--mono)', padding: '13px 0', caretColor: '#fff' },
+  '.cm-line': { padding: '0 10px' },
+  '.cm-gutters': { backgroundColor: '#0b1419', color: '#9baea8', border: 0 },
+  '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: '#202c32' },
   '.cm-cursor': { borderLeftColor: '#fff' },
-  '.cm-editable-line': { backgroundColor: '#28223f' },
-  '.cm-selectionBackground, &.cm-focused .cm-selectionBackground, .cm-content ::selection': { background: '#51447a' },
+  '.cm-editable-line': { backgroundColor: '#14291f' },
+  '.cm-selectionBackground, &.cm-focused .cm-selectionBackground, .cm-content ::selection': { background: '#31564a' },
 }, { dark: true });
 
 const editableLines = ViewPlugin.fromClass(class {
@@ -62,7 +63,7 @@ export function createEditor(parent, onBlocked, onChange) {
     state: EditorState.create({
       doc: prefix + readDraft() + suffix,
       extensions: [
-        basicSetup, python(), syntaxHighlighting(syntax), theme, editableLines,
+        basicSetup, python(), syntaxHighlighting(syntax), theme, editableLines, EditorView.lineWrapping,
         EditorView.contentAttributes.of({ 'aria-label': 'Python code for Last shuttle', spellcheck: 'false' }),
         EditorState.changeFilter.of((transaction) => {
           const end = transaction.startState.doc.length - suffix.length;

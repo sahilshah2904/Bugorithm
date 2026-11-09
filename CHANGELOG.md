@@ -4,6 +4,13 @@
 
 Track changes here as the next milestone takes shape.
 
+## v0.0.3
+
+- Add separate pages for Algo Fixes, Python Learn, 100 Questions, About, and Settings.
+- Use a full-width dark theme with larger typography and saved text-size and motion preferences.
+- Add a winding map with eight runnable Python lessons, hover and focus previews, and saved completion.
+- Add search and topic filters for 100 LeetCode references.
+
 ## v0.0.2
 
 - Add the Last shuttle debugging sample with a Python editor, editable markers, draft recovery, and real browser-side Python execution.

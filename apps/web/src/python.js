@@ -1,4 +1,5 @@
 let worker;
+let queue = Promise.resolve();
 
 function stopWorker() {
   worker?.terminate();
@@ -26,12 +27,26 @@ function request(data, timeout, timeoutMessage) {
   });
 }
 
-export async function runPythonCase(code, { arrivals, cutoff }, onLoading) {
+async function runPython(data, onLoading) {
   if (!worker) {
     onLoading();
     worker = new Worker(new URL('./python.worker.js', import.meta.url), { type: 'module' });
     const runtime = new URL(import.meta.env.BASE_URL + 'python/', location.href).href;
     await request({ runtime }, 30_000, 'Python took too long to load. Try again.');
   }
-  return request({ code, input: { arrivals, cutoff } }, 2500, 'Python stopped after 2.5 seconds. Check for an infinite loop.');
+  return request(data, 2500, 'Python stopped after 2.5 seconds. Check for an infinite loop.');
+}
+
+function enqueue(data, onLoading) {
+  const result = queue.then(() => runPython(data, onLoading));
+  queue = result.catch(() => {});
+  return result;
+}
+
+export function runPythonCase(code, { arrivals, cutoff }, onLoading) {
+  return enqueue({ code, input: { arrivals, cutoff } }, onLoading);
+}
+
+export function runPythonSnippet(code, onLoading) {
+  return enqueue({ code, snippet: true }, onLoading);
 }

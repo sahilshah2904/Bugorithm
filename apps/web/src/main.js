@@ -1,6 +1,6 @@
 import { examples, expectedCount, sampleCases } from './challenge.js';
 import { createEditor } from './editor.js';
-import { accent, celebrate, revealPage, stopCelebration } from './motion.js';
+import { accent, celebrate, stopCelebration } from './motion.js';
 import { runPythonCase } from './python.js';
 
 const find = (selector) => document.querySelector(selector);
@@ -155,4 +155,3 @@ function moveTrace(direction) {
 
 previous.addEventListener('click', () => moveTrace(-1));
 next.addEventListener('click', () => moveTrace(1));
-revealPage();

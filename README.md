@@ -2,7 +2,7 @@
 
 Bugorithm is an untimed Python 3 debugging lab. Draw a short challenge, read the backstory, repair the marked code, and run public examples or your own input. On submission, the judge stops at the first failing private test and reveals that input so you can reproduce the failure. A successful fix unlocks a walkthrough and a brief celebration.
 
-Try the [first playable sample](https://sahilshah2904.github.io/Bugorithm/). It has one story-based challenge with real Python execution and a walkthrough. The [roadmap](docs/ROADMAP.md) tracks the private judge and later content milestones.
+The playable preview includes a story-based debugging challenge, eight runnable Python lessons, and a separate interview question library. [Open Bugorithm](https://sahilshah2904.github.io/Bugorithm/)
 
 ## Reproduce the current milestone
 
@@ -11,7 +11,7 @@ Install Git and Node.js 24. Run these commands from a terminal.
 ```text
 git clone https://github.com/sahilshah2904/Bugorithm.git
 cd Bugorithm
-git switch --detach v0.0.2
+git switch --detach v0.0.3
 cd apps/web
 npm ci
 npm run dev

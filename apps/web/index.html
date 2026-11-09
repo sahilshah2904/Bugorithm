@@ -3,54 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f7f6f2" />
+    <meta name="theme-color" content="#090e12" />
     <meta name="description" content="An untimed Python debugging lab. Read the brief, run the code, and find the fix." />
     <link rel="icon" href="./mark.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./src/style.css" />
     <title>Bugorithm — Python debugging lab</title>
   </head>
   <body>
-    <a class="skip" href="#lab">Skip to the challenge</a>
+    <a class="skip" href="#main-content">Skip to content</a>
     <header class="site-header">
       <div class="shell header-inner">
-        <a class="brand" href="#top"><img src="./mark.svg" alt="" width="34" height="34" />Bugorithm<span>.</span></a>
+        <a class="brand" href="#/fixes"><img src="./mark.svg" alt="" width="36" height="36" />Bugorithm</a>
         <nav aria-label="Main navigation">
-          <a class="nav-link nav-primary" href="#lab">Debug lab</a>
-          <a class="nav-link" href="#field-note">Field note</a>
+          <a class="nav-link" href="#/fixes" data-nav="fixes">Algo Fixes</a>
+          <a class="nav-link" href="#/learn" data-nav="learn">Python Learn</a>
+          <a class="nav-link" href="#/questions" data-nav="questions">100 Questions</a>
+          <a class="nav-link" href="#/about" data-nav="about">About</a>
+          <a class="nav-link" href="#/settings" data-nav="settings">Settings</a>
         </nav>
-        <a class="repo-link" href="https://github.com/sahilshah2904/Bugorithm">GitHub <span aria-hidden="true">↗</span></a>
+        <span class="header-status" aria-hidden="true"><span class="signal"></span> PYTHON LAB</span>
       </div>
     </header>
-    <main id="top" class="shell">
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <p class="eyebrow"><span class="signal"></span> THE PYTHON DEBUGGING LAB</p>
-          <h1 id="hero-title">Find the bug.<br /><em>Make it work.</em></h1>
-          <p>Short Python challenges with a story, a failing case, and room to experiment.</p>
-        </div>
-        <div class="hero-diagram" aria-hidden="true">
-          <div class="diagram-top"><span><i></i> EXECUTION TRACE</span><span>001 / 001</span></div>
-          <div class="diagram-row">
-            <div class="diagram-card"><span>INPUT</span><strong>[1, 3, 3, 5]</strong></div>
-            <svg viewBox="0 0 28 12"><path d="M1 6h24m-5-5 5 5-5 5" fill="none" stroke="currentColor" /></svg>
-            <div class="diagram-card diagram-focus"><span>BOUNDARY</span><strong>cutoff = 3</strong></div>
-          </div>
-          <div class="diagram-bottom"><span>Watch what happens at equality.</span><span class="diagram-cross">✳</span></div>
-        </div>
-      </section>
-
+    <main id="main-content" class="shell" tabindex="-1">
+      <div id="fixes-page" data-page="fixes">
+      <header class="page-heading">
+        <p class="eyebrow">01 / DEBUG LAB</p>
+        <h1 tabindex="-1">Algo Fixes</h1>
+      </header>
       <section id="lab" class="lab" aria-labelledby="challenge-title">
-        <div class="lab-label"><span><span class="index">01</span> DEBUG LAB</span><span class="sample-label">PLAYABLE SAMPLE</span></div>
         <div class="workspace">
           <article class="brief">
-            <div class="brief-meta"><span class="tag">Warm-up</span><span class="tag tag-plain">Loops &amp; conditions</span></div>
+            <div class="brief-meta"><span class="tag">01</span><span class="tag tag-plain">Loops &amp; conditions</span></div>
             <h2 id="challenge-title">Last shuttle</h2>
-            <p>The shuttle dashboard counts passengers who arrived before boarding closed. The cutoff is exclusive, but arrivals right at closing are slipping through.</p>
-            <h3>Expected behaviour</h3>
-            <p>Given a sorted list of non-negative arrival minutes and a non-negative cutoff, count only arrivals <strong>strictly before</strong> the cutoff.</p>
+            <p>The shuttle dashboard is counting arrivals at closing time. Given sorted, non-negative arrival minutes, count only arrivals <strong>before</strong> the cutoff.</p>
             <h3>Public examples</h3>
             <dl class="example-list">
               <div><dt><code>[1, 2, 5]</code> · cutoff <code>4</code></dt><dd><span aria-label="returns">→</span> <code>2</code></dd></div>
@@ -58,7 +46,7 @@
             </dl>
             <details class="hint">
               <summary>Show a hint</summary>
-              <p>Trace the condition when an arrival minute is exactly equal to the cutoff. Should the loop stop or keep counting?</p>
+              <p>What happens when the arrival minute equals the cutoff?</p>
             </details>
           </article>
 
@@ -71,7 +59,7 @@
                 <button id="run" type="button" class="button button-light"><span aria-hidden="true">▷</span> Run examples</button>
                 <button id="submit" type="button" class="button button-primary">Check fix <span aria-hidden="true">→</span></button>
               </div>
-              <p class="runner-note">Sample grading runs in your browser.</p>
+              <p class="runner-note">Five sample checks · Runs in your browser</p>
               <details id="custom-panel" class="custom">
                 <summary>Custom input</summary>
                 <form id="custom-form">
@@ -82,7 +70,7 @@
               </details>
               <div id="status" class="status" role="status" aria-atomic="true"><span class="status-dot"></span><span>Ready to run</span></div>
               <ul id="results" class="results" aria-label="Test results"></ul>
-              <button id="load-case" class="text-button violet-text" type="button" hidden>Load failing input into Custom input ↗</button>
+              <button id="load-case" class="text-button" type="button" hidden>Load failing input into Custom input ↗</button>
               <div id="review" class="review" hidden>
                 <h3>Why the boundary mattered</h3>
                 <p>The starter only stopped at a minute greater than the cutoff. It counted arrivals at the cutoff itself. Stopping at <code>minute &gt;= cutoff</code> keeps the count strictly before closing.</p>
@@ -96,7 +84,7 @@
         <div>
           <p class="eyebrow"><span class="signal"></span> FIELD NOTE / 01</p>
           <h2 id="field-title">The boundary is the bug.</h2>
-          <p>Step through the shuttle inputs and watch how the condition handles the first arrival at closing.</p>
+          <p>Step through the cutoff case.</p>
         </div>
         <div class="trace">
           <div class="trace-header"><span>ARRIVAL MINUTES</span><span>cutoff = 3</span></div>
@@ -110,9 +98,44 @@
           </div>
         </div>
       </section>
+      </div>
+
+      <section data-page="learn" id="learn-page" hidden></section>
+      <section data-page="lesson" id="lesson-page" hidden></section>
+
+      <section data-page="questions" hidden>
+        <header class="page-heading"><p class="eyebrow">03 / INTERVIEW LIBRARY</p><h1 tabindex="-1">100 Questions</h1><p>Browse practice references by topic.</p></header>
+        <div class="library-controls">
+          <label>Find a question<input type="search" id="question-search" placeholder="Title, number, or topic" /></label>
+          <label>Topic<select id="question-topic"><option value="">All topics</option></select></label>
+        </div>
+        <p id="question-count" class="muted" role="status"></p>
+        <ol id="question-list" class="question-list"></ol>
+      </section>
+
+      <section data-page="about" hidden>
+        <header class="page-heading"><p class="eyebrow">04 / PROJECT</p><h1 tabindex="-1">About</h1><p>Bugorithm is an untimed Python practice lab.</p></header>
+        <div class="info-list">
+          <a href="#/fixes"><strong>Algo Fixes</strong><span>Repair a short Python program and run your fix.</span><span aria-hidden="true">↗</span></a>
+          <a href="#/learn"><strong>Python Learn</strong><span>Learn one idea per level, then try it in Python.</span><span aria-hidden="true">↗</span></a>
+          <a href="#/questions"><strong>100 Questions</strong><span>Browse the separate interview practice library.</span><span aria-hidden="true">↗</span></a>
+          <a href="https://github.com/sahilshah2904/Bugorithm"><strong>GitHub</strong><span>Source code and project roadmap.</span><span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+
+      <section data-page="settings" hidden>
+        <header class="page-heading"><p class="eyebrow">05 / PREFERENCES</p><h1 tabindex="-1">Settings</h1><p>Saved in this browser.</p></header>
+        <div class="settings-list">
+          <label for="text-setting"><strong>Text size</strong><span>Changes the interface and code text.</span></label>
+          <select id="text-setting"><option value="standard">Standard</option><option value="large">Larger</option></select>
+          <label for="motion-setting"><strong>Motion</strong><span>Controls transitions, path motion, and confetti.</span></label>
+          <select id="motion-setting"><option value="system">Use device setting</option><option value="reduce">Reduce motion</option></select>
+        </div>
+      </section>
     </main>
-    <footer class="site-footer shell"><span>Bugorithm · First playable sample</span><a href="https://github.com/sahilshah2904/Bugorithm">Source on GitHub ↗</a></footer>
+    <footer class="site-footer shell"><span>Bugorithm</span><a href="https://github.com/sahilshah2904/Bugorithm">Source on GitHub ↗</a></footer>
     <div id="confetti" aria-hidden="true"></div>
     <script type="module" src="./src/main.js"></script>
+    <script type="module" src="./src/navigation.js"></script>
   </body>
 </html>

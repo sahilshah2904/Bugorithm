@@ -3,23 +3,42 @@ let python;
 const evaluate = `
 import json as _json
 import traceback as _traceback
+from contextlib import redirect_stdout as _redirect_stdout
 
-def _run_case():
+class _Output:
+    def __init__(self):
+        self.text = ""
+
+    def write(self, text):
+        self.text += text[:max(0, 4000 - len(self.text))]
+        return len(text)
+
+    def flush(self):
+        pass
+
+def _run():
+    filename = "lesson.py" if _snippet else "shuttle.py"
     try:
+        program = {"__name__": "__main__" if _snippet else "shuttle"}
+        compiled = compile(_code, filename, "exec")
+        if _snippet:
+            output = _Output()
+            with _redirect_stdout(output):
+                exec(compiled, program)
+            return _json.dumps({"output": output.text})
         case = _json.loads(_input)
-        program = {"__name__": "shuttle"}
-        exec(compile(_code, "shuttle.py", "exec"), program)
+        exec(compiled, program)
         result = program["arrivals_before"](case["arrivals"], case["cutoff"])
         if type(result) is int and -(2**53) < result < 2**53:
             return _json.dumps({"value": result})
         return _json.dumps({"error": "The function must return an integer count."})
     except BaseException as error:
-        frames = [frame for frame in _traceback.extract_tb(error.__traceback__) if frame.filename == "shuttle.py"]
+        frames = [frame for frame in _traceback.extract_tb(error.__traceback__) if frame.filename == filename]
         line = getattr(error, "lineno", None) or (frames[-1].lineno if frames else None)
         message = f"{type(error).__name__}: {str(error)[:240]}"
         return _json.dumps({"error": f"Line {line} · {message}" if line else message})
 
-_run_case()
+_run()
 `;
 
 self.onmessage = async ({ data }) => {
@@ -35,7 +54,7 @@ self.onmessage = async ({ data }) => {
       self.postMessage({ ready: true });
       return;
     }
-    const scope = python.toPy({ _code: data.code, _input: JSON.stringify(data.input) });
+    const scope = python.toPy({ _code: data.code, _input: JSON.stringify(data.input ?? null), _snippet: Boolean(data.snippet) });
     try {
       const result = python.runPython(evaluate, { globals: scope });
       self.postMessage(JSON.parse(result));

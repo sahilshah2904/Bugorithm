@@ -1,6 +1,8 @@
 # Web app
 
-The playable sample includes the Last shuttle challenge, a CodeMirror editor, public examples, custom inputs, and a step-through explanation. Python runs in a browser worker using Pyodide. Anime.js handles the entrance, trace accents, and celebration with a reduced-motion fallback.
+Algo Fixes includes the Last shuttle challenge, a CodeMirror editor, public examples, custom inputs, and a step-through explanation. Python Learn offers eight levels with editable exercises, real Python output, and local completion tracking. The separate 100 Questions page lists filterable LeetCode references.
+
+Python runs in a browser worker using Pyodide. Anime.js animates route changes, level markers, and successful fixes. Text size and motion preferences are available in Settings.
 
 Use Node.js 24 and npm.
 
@@ -12,4 +14,6 @@ npm run dev
 
 Run `npm run build` to generate `dist/` and `npm run preview` to serve the production build locally. The build copies the pinned Pyodide runtime from npm into the site so it can load Python from the same host. GitHub Actions publishes only `dist/` to GitHub Pages after a successful build on `main`.
 
-Try both examples, then select **Check fix** to see the first failing input. Use **Load failing input into Custom input** to reproduce it. Change the comparison to `>=` and check again to see the full pass and walkthrough. All sample checks run in the browser. The private submission judge and the rest of the curriculum follow the [roadmap](../../docs/ROADMAP.md).
+In Algo Fixes, run the examples, select **Check fix**, and load the first failing input into the custom panel. Change the comparison to `>=` and check again. In Python Learn, open Level 1, run the example, then edit and check the exercise. Check that the completed level is marked when you return to the map.
+
+The private submission judge and further lessons follow the [roadmap](../../docs/ROADMAP.md).
