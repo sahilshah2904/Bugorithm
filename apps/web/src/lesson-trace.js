@@ -1,15 +1,13 @@
-import { accent } from './motion.js';
-
 export function mountLessonTrace(container, lesson) {
   container.innerHTML = `
     <div class="lesson-trace-heading"><h2>Follow the execution</h2><span data-trace-step></span></div>
     <div class="lesson-trace-grid">
       <ol class="trace-code" aria-label="Example code"></ol>
       <div class="trace-inspector">
-        <p class="trace-explanation" aria-live="polite"></p>
-        <dl class="trace-state"></dl>
+        <div class="trace-stack trace-explanation"><p aria-live="polite"></p></div>
+        <div class="trace-stack"></div>
         <ol class="trace-sequence" aria-label="Sequence values" hidden></ol>
-        <div class="trace-console"><span>Console</span><pre></pre></div>
+        <div class="trace-console"><span>Console</span><div class="trace-stack"><pre></pre></div></div>
       </div>
     </div>
     <div class="lesson-trace-controls">
@@ -40,54 +38,85 @@ export function mountLessonTrace(container, lesson) {
   const scrubber = find('input[type="range"]');
   const speed = find('select');
   const sequence = find('.trace-sequence');
-  let step = 0;
-  let timer;
-  let playing = false;
+  const explanation = find('.trace-explanation > p');
+  const output = find('.trace-console pre');
+  const stepLabel = find('[data-trace-step]');
+  const frames = lesson.frames;
 
-  function draw(highlight = true) {
-    const frame = lesson.frames[step];
-    const previousValues = new Map(lesson.frames[step - 1]?.values ?? []);
-    codeLines.forEach((line, index) => {
-      if (index + 1 === frame.line) line.setAttribute('aria-current', 'step');
-      else line.removeAttribute('aria-current');
-    });
-    const state = frame.values.map(([name, value]) => {
+  function reserveSpace(slot, tag, texts) {
+    const sizes = new Set(texts);
+    for (const text of sizes) {
+      const spacer = document.createElement(tag);
+      spacer.textContent = text;
+      spacer.setAttribute('aria-hidden', 'true');
+      slot.append(spacer);
+    }
+  }
+
+  reserveSpace(explanation.parentElement, 'p', frames.map(({ note }) => note));
+  reserveSpace(output.parentElement, 'pre', frames.map(({ output }) => output || '—'));
+  const stateSlot = find('.trace-explanation + .trace-stack');
+  const states = frames.map((frame, index) => {
+    const state = document.createElement('dl');
+    state.className = 'trace-state';
+    const previousValues = new Map(frames[index - 1]?.values ?? []);
+    for (const [name, value] of frame.values) {
       const item = document.createElement('div');
       const label = document.createElement('dt');
       const detail = document.createElement('dd');
       label.textContent = name;
       detail.textContent = value;
       item.append(label, detail);
-      if (previousValues.get(name) !== value) item.classList.add('state-changed');
-      return item;
-    });
-    find('.trace-state').replaceChildren(...state);
+      item.classList.toggle('state-changed', previousValues.get(name) !== value);
+      state.append(item);
+    }
+    state.setAttribute('aria-hidden', 'true');
+    return state;
+  });
+  stateSlot.append(...states);
+
+  const cells = Array.from({ length: Math.max(...frames.map((frame) => frame.sequence?.items.length ?? 0)) },
+    () => document.createElement('li'));
+  sequence.append(...cells);
+  let step = 0;
+  let shown;
+  let timer;
+  let playing = false;
+
+  function draw() {
+    if (shown === step) return;
+    const frame = frames[step];
+    if (shown !== undefined) {
+      codeLines[frames[shown].line - 1]?.removeAttribute('aria-current');
+      states[shown].setAttribute('aria-hidden', 'true');
+    }
+    shown = step;
+    codeLines[frame.line - 1]?.setAttribute('aria-current', 'step');
+    states[step].removeAttribute('aria-hidden');
+
     sequence.hidden = !frame.sequence;
     if (frame.sequence) {
-      sequence.replaceChildren(...frame.sequence.items.map((item, index) => {
-        const cell = document.createElement('li');
-        cell.textContent = item;
-        if (index === frame.sequence.edge) cell.classList.add('trace-edge');
-        if (index === frame.sequence.active) {
-          cell.setAttribute('aria-current', 'step');
-          if (highlight) accent(cell);
-        }
-        return cell;
-      }));
+      cells.forEach((cell, index) => {
+        const item = frame.sequence.items[index];
+        if (cell.textContent !== item) cell.textContent = item ?? '';
+        cell.hidden = item === undefined;
+        cell.classList.toggle('trace-edge', index === frame.sequence.edge);
+        if (index === frame.sequence.active) cell.setAttribute('aria-current', 'step');
+        else cell.removeAttribute('aria-current');
+      });
     }
-    find('.trace-explanation').textContent = frame.note;
-    find('.trace-console pre').textContent = frame.output || '—';
-    find('[data-trace-step]').textContent = `Step ${step + 1} of ${lesson.frames.length}`;
+    explanation.textContent = frame.note;
+    if (output.textContent !== (frame.output || '—')) output.textContent = frame.output || '—';
+    stepLabel.textContent = `Step ${step + 1} of ${frames.length}`;
     scrubber.value = step + 1;
     back.disabled = step === 0;
-    next.disabled = step === lesson.frames.length - 1;
-    if (highlight) state.filter((item) => item.classList.contains('state-changed')).forEach(accent);
+    next.disabled = step === frames.length - 1;
   }
 
   function pause() {
     clearTimeout(timer);
     playing = false;
-    play.textContent = step === lesson.frames.length - 1 ? 'Replay' : 'Play';
+    play.textContent = step === frames.length - 1 ? 'Replay' : 'Play';
   }
 
   function jump(index) {
@@ -97,12 +126,14 @@ export function mountLessonTrace(container, lesson) {
   }
 
   function tick() {
-    timer = setTimeout(() => {
-      step += 1;
-      draw();
-      if (step === lesson.frames.length - 1) pause();
-      else tick();
-    }, 1150 / Number(speed.value));
+    timer = setTimeout(advance, 760 / Number(speed.value));
+  }
+
+  function advance() {
+    step += 1;
+    draw();
+    if (step === frames.length - 1) pause();
+    else tick();
   }
 
   play.addEventListener('click', () => {
@@ -110,10 +141,12 @@ export function mountLessonTrace(container, lesson) {
       pause();
       return;
     }
-    if (step === lesson.frames.length - 1) jump(0);
+    const replay = step === frames.length - 1;
+    if (replay) jump(0);
     playing = true;
     play.textContent = 'Pause';
-    tick();
+    if (replay) tick();
+    else advance();
   });
   back.addEventListener('click', () => jump(step - 1));
   next.addEventListener('click', () => jump(step + 1));
@@ -125,6 +158,6 @@ export function mountLessonTrace(container, lesson) {
       tick();
     }
   });
-  draw(false);
+  draw();
   return pause;
 }

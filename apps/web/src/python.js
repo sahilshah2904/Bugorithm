@@ -1,9 +1,13 @@
 let worker;
+let startup;
+let ready = false;
 let queue = Promise.resolve();
 
 function stopWorker() {
   worker?.terminate();
   worker = undefined;
+  startup = undefined;
+  ready = false;
 }
 
 function request(data, timeout, timeoutMessage) {
@@ -27,13 +31,26 @@ function request(data, timeout, timeoutMessage) {
   });
 }
 
-async function runPython(data, onLoading) {
-  if (!worker) {
-    onLoading();
-    worker = new Worker(new URL('./python.worker.js', import.meta.url), { type: 'module' });
-    const runtime = new URL(import.meta.env.BASE_URL + 'python/', location.href).href;
-    await request({ runtime }, 30_000, 'Python took too long to load. Try again.');
+function startPython() {
+  if (startup) return startup;
+  worker = new Worker(new URL('./python.worker.js', import.meta.url), { type: 'module' });
+  const runtime = new URL(import.meta.env.BASE_URL + 'python/', location.href).href;
+  startup = request({ runtime }, 30_000, 'Python took too long to load. Try again.').then(() => { ready = true; });
+  return startup;
+}
+
+export async function preparePython() {
+  if (navigator.connection?.saveData) return;
+  try {
+    await startPython();
+  } catch {
+    // An explicit run can retry and report any error to the learner.
   }
+}
+
+async function runPython(data, onLoading) {
+  if (!ready) onLoading();
+  await startPython();
   return request(data, 2500, 'Python stopped after 2.5 seconds. Check for an infinite loop.');
 }
 

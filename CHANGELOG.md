@@ -4,6 +4,12 @@
 
 Track changes here as the next milestone takes shape.
 
+## v0.0.5
+
+- Open lessons as a reactor ripple spreads from the selected level marker to the edges of the viewport.
+- Keep execution trace controls steady as the code, variables, and console change. Start playback on the first click and shorten the interval between steps.
+- Prepare Python in the background on the Trail so the first run can reuse an initialized worker.
+
 ## v0.0.4
 
 - Rename Python Learn to Python Trail and give the map a quieter field-guide style.

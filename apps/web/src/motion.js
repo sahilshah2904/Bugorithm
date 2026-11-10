@@ -3,56 +3,72 @@ import { animate, stagger } from 'animejs';
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const confetti = document.querySelector('#confetti');
 let celebration;
-let aurora;
+let stopReactorEffect;
 
-export function stopAurora() {
-  aurora?.animation.cancel();
-  aurora?.overlay.remove();
-  aurora = undefined;
+export function stopReactor() {
+  stopReactorEffect?.();
+  stopReactorEffect = undefined;
 }
 
-export function openWithAurora(node, navigate) {
-  stopAurora();
-  if (!motionEnabled()) {
-    navigate();
-    return;
-  }
-
-  const bounds = node.getBoundingClientRect();
+export function startReactor(node, map) {
+  const marker = node.getBoundingClientRect();
+  const mapBounds = map.getBoundingClientRect();
+  const x = marker.left + marker.width / 2;
+  const y = marker.top + marker.height / 2;
+  const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
   const overlay = document.createElement('div');
-  overlay.className = 'aurora-overlay';
+  overlay.className = 'reactor-overlay';
   overlay.setAttribute('aria-hidden', 'true');
-  overlay.style.setProperty('--aurora-x', `${bounds.left + bounds.width / 2}px`);
-  overlay.style.setProperty('--aurora-y', `${bounds.top + bounds.height / 2}px`);
+  overlay.style.setProperty('--reactor-x', `${x}px`);
+  overlay.style.setProperty('--reactor-y', `${y}px`);
+  overlay.style.setProperty('--wave-size', `${Math.ceil(radius * 2.48)}px`);
   overlay.innerHTML = `
-    <div class="aurora-origin">
-      <svg viewBox="0 0 900 390" class="aurora-ribbons">
-        <defs>
-          <linearGradient id="aurora-light" x1="0" y1="1" x2="1" y2="0">
-            <stop offset="0" stop-color="#85d88f" stop-opacity="0"></stop>
-            <stop offset=".38" stop-color="#9ffbc9"></stop>
-            <stop offset=".67" stop-color="#75dfbf" stop-opacity=".78"></stop>
-            <stop offset="1" stop-color="#88b5e4" stop-opacity="0"></stop>
-          </linearGradient>
-        </defs>
-        <path d="M43 320 C172 120 279 313 450 195 S692 35 858 69"></path>
-        <path d="M31 302 C175 87 300 286 450 195 S698 10 869 94"></path>
-        <path d="M55 338 C216 168 296 329 450 195 S700 87 849 119"></path>
-      </svg>
-    </div>
+    <div class="reactor-wave"></div>
+    <div class="reactor-wave reactor-echo"></div>
+    <svg class="reactor-core" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="46" stroke="#7be9e0" stroke-width="2" stroke-dasharray="12 8.65"></circle>
+      <circle cx="50" cy="50" r="37" stroke="#a9fff2" stroke-width="2"></circle>
+      <path d="M50 24 74 66H26Z" fill="#70e6df" fill-opacity=".25" stroke="#d1fff7" stroke-width="3" stroke-linejoin="round"></path>
+      <path d="M50 40 61 60H39Z" fill="#b5fff4"></path>
+    </svg>
   `;
+  map.inert = true;
+  map.classList.add('reactor-map-out');
+  Object.assign(map.style, { top: `${mapBounds.top}px`, left: `${mapBounds.left}px`, width: `${mapBounds.width}px` });
   document.body.append(overlay);
-  const animation = animate(overlay.querySelector('svg'), {
-    scale: [{ from: .04, to: 1, duration: 1250, ease: 'outCubic' }],
-    rotate: [-12, 3],
-    opacity: [{ from: 0, to: .88, duration: 480 }, { to: 0, duration: 770 }],
-    duration: 1250,
-    onComplete: () => {
-      stopAurora();
-      navigate();
-    },
-  });
-  aurora = { overlay, animation };
+
+  const pulse = (wave, delay, opacity, aspect) => wave.animate([
+    { transform: `scale(.06, ${.06 * aspect})`, opacity: 0 },
+    { opacity, offset: .14 },
+    { opacity: opacity * .72, offset: .72 },
+    { transform: `scale(1.04, ${1.04 * aspect})`, opacity: 0 },
+  ], { duration: 1350, delay, easing: 'cubic-bezier(.24, .45, .52, .98)', fill: 'backwards' });
+  const [wave, echo, core] = overlay.children;
+  const animations = [
+    pulse(wave, 0, .88, 1),
+    pulse(echo, 145, .53, .89),
+    core.animate([
+      { transform: 'scale(.72) rotate(-22deg)', opacity: .15 },
+      { transform: 'scale(1.04) rotate(0)', opacity: 1, offset: .27 },
+      { transform: 'scale(1.4) rotate(23deg)', opacity: 0 },
+    ], { duration: 720, easing: 'ease-out' }),
+    map.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 930, easing: 'ease-in-out', fill: 'forwards' }),
+  ];
+  animations[1].addEventListener('finish', stopReactor, { once: true });
+  stopReactorEffect = () => {
+    animations.forEach((animation) => animation.cancel());
+    overlay.remove();
+    map.hidden = true;
+    map.inert = false;
+    map.classList.remove('reactor-map-out');
+    ['top', 'left', 'width'].forEach((property) => map.style.removeProperty(property));
+  };
+  return (lesson) => {
+    animations.push(lesson.animate([
+      { opacity: 0, transform: 'translateY(20px)' },
+      { opacity: 1, transform: 'translateY(0)' },
+    ], { duration: 1110, delay: 100, easing: 'cubic-bezier(.25, .62, .28, 1)', fill: 'backwards' }));
+  };
 }
 
 export function motionEnabled() {
@@ -104,5 +120,8 @@ export function celebrate() {
 }
 
 reducedMotion.addEventListener('change', () => {
-  if (reducedMotion.matches) stopCelebration();
+  if (reducedMotion.matches) {
+    stopReactor();
+    stopCelebration();
+  }
 });

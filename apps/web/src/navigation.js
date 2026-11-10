@@ -1,7 +1,7 @@
 import { lessons } from './lessons.js';
 import { mountLessonTrace } from './lesson-trace.js';
-import { motionEnabled, openWithAurora, revealPage, stopAurora, stopCelebration } from './motion.js';
-import { runPythonSnippet } from './python.js';
+import { motionEnabled, revealPage, startReactor, stopCelebration, stopReactor } from './motion.js';
+import { preparePython, runPythonSnippet } from './python.js';
 import { questions } from './questions.js';
 
 const pages = new Map([...document.querySelectorAll('[data-page]')].map((page) => [page.dataset.page, page]));
@@ -102,14 +102,15 @@ learnPage.addEventListener('click', (event) => {
   const node = event.target.closest('.level-link');
   if (!node || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
-  openWithAurora(node, () => { location.hash = node.hash; });
+  history.pushState(null, '', node.hash);
+  route(true, node);
 });
 
 function updateTrack() {
-  if (learnPage.hidden || mapFrame) return;
+  if (learnPage.hidden || learnPage.inert || mapFrame) return;
   mapFrame = requestAnimationFrame(() => {
     mapFrame = undefined;
-    if (learnPage.hidden) return;
+    if (learnPage.hidden || learnPage.inert) return;
     const bounds = learnPage.querySelector('.level-map').getBoundingClientRect();
     const progress = motionEnabled() ? (innerHeight * .72 - bounds.top) / bounds.height : 1;
     learnPage.querySelector('#track-window rect').setAttribute('height', Math.max(0, Math.min(1, progress)) * lessons.length * 140);
@@ -244,8 +245,8 @@ function renderQuestions() {
 search.addEventListener('input', renderQuestions);
 topicFilter.addEventListener('change', renderQuestions);
 
-function route(focus = false) {
-  stopAurora();
+function route(focus = false, marker) {
+  stopReactor();
   stopTrace?.();
   stopTrace = undefined;
   const [requested, value] = location.hash.replace(/^#\//, '').split('/');
@@ -254,7 +255,8 @@ function route(focus = false) {
   const key = isLesson ? 'lesson' : pages.has(requested) && requested !== 'lesson' ? requested : 'fixes';
   const page = pages.get(key);
   const returningToMap = key === 'learn' && !lessonPage.hidden && lastLevel;
-  pages.forEach((element) => { element.hidden = element !== page; });
+  const revealLesson = marker && isLesson && motionEnabled() ? startReactor(marker, learnPage) : undefined;
+  pages.forEach((element) => { element.hidden = element !== page && !(revealLesson && element === learnPage); });
   if (key === 'learn') renderMap();
   else if (isLesson) {
     lastLevel = level;
@@ -276,7 +278,9 @@ function route(focus = false) {
     if (focus) heading.focus({ preventScroll: true });
   }
   if (location.hash === '#field-note') document.querySelector('#field-note').scrollIntoView();
-  if (key !== 'learn') revealPage(heading);
+  if (revealLesson) revealLesson(page);
+  else if (key !== 'learn') revealPage(heading);
+  if (key === 'learn' || isLesson) void preparePython();
   updateTrack();
 }
 

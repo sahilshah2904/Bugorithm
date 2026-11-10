@@ -2,7 +2,9 @@
 
 ## Python Trail · 10 November 2026
 
-Renamed the learning area to Python Trail and preserved the existing lesson URLs and saved progress. The redesign uses a calm background, restrained marker states, and an aurora that starts at the selected level. The eight playable lessons now introduce Python through a coastal field station story. Each trace ties the code line to changing values and console output. The design review drew on Damir Sokolovsky's Unslop and VizLearn's execution walkthrough. [Unslop](https://github.com/heydamir/unslop) · [VizLearn](https://vizlearn.app/algorithms/sorting/bubble-sort)
+Renamed the learning area to Python Trail and preserved the existing lesson URLs and saved progress. The eight playable lessons introduce Python through a coastal field station story. Each trace ties the code line to changing values and console output. The design review drew on Damir Sokolovsky's Unslop and VizLearn's execution walkthrough. [Unslop](https://github.com/heydamir/unslop) · [VizLearn](https://vizlearn.app/algorithms/sorting/bubble-sort)
+
+In v0.0.5, a reactor ripple starts at the selected level and expands as the lesson fades in. Reduced motion opens the lesson immediately. Trace playback advances on click and reserves room for each frame's state and output so the controls stay in place. The Trail prepares Python in a shared worker when the map or a lesson opens. Data Saver defers preparation until a run, and the runner can retry after startup errors or timeouts.
 
 Continue with levels 9–20 from the curriculum. Add the story, runnable example, exercise, and trace frames for each level. Compare the final trace output with the real Python example, then verify that the practice answer completes the level. Preserve existing level numbers so browser progress and deep links still work. [Curriculum](PYTHON_TRAIL.md) · [Live Python Trail](https://sahilshah2904.github.io/Bugorithm/#/learn)
 
