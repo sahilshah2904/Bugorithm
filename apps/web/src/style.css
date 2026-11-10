@@ -48,7 +48,7 @@ h1, h2, h3, p { margin: 0 0 .65em; }
 code, pre, textarea.code-input { font-family: var(--mono); }
 .muted { color: var(--muted); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.shell { width: 100%; padding-inline: clamp(16px, 4vw, 72px); }
+.shell { --shell-gutter: clamp(16px, 4vw, 72px); width: 100%; padding-inline: var(--shell-gutter); }
 .skip { position: fixed; top: 1rem; left: 1rem; z-index: 20; background: var(--accent); color: var(--accent-ink); padding: 8px 14px; }
 .skip:not(:focus) { clip-path: inset(50%); }
 .site-header { position: sticky; top: 0; z-index: 5; background: var(--inset); border-bottom: 1px solid var(--line); }
@@ -132,8 +132,10 @@ input, select, .code-input { width: 100%; color: var(--ink); background: var(--i
 .lesson-header { border-bottom: 1px solid var(--line); }
 .lesson-header h1 { font-size: clamp(2.6rem, 5vw, 4.3rem); font-weight: 500; letter-spacing: -.06em; }
 .map-heading {
+  position: sticky; top: var(--site-header-height, 75px); z-index: 4;
   display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px;
-  padding-block: clamp(18px, 3vw, 38px) 6px;
+  margin-inline: calc(-1 * var(--shell-gutter)); padding: 8px var(--shell-gutter);
+  background: var(--inset); box-shadow: 0 6px 16px #06091850;
 }
 .map-heading h1 { margin: 0; font-size: clamp(1.45rem, 2vw, 1.85rem); line-height: 1.2; letter-spacing: -.045em; }
 .trail-label { color: var(--muted); font: .84rem/1.5 var(--mono); }
@@ -141,13 +143,20 @@ input, select, .code-input { width: 100%; color: var(--ink); background: var(--i
 .chapter-picker { display: flex; align-items: center; gap: 8px; max-width: 100%; }
 .chapter-picker label { color: var(--muted); font-size: .82rem; }
 .chapter-picker select { width: auto; min-width: 0; font-size: .88rem; }
-.level-map { position: relative; max-width: 1000px; margin: 0 auto; }
+.level-map { --trail-row: 140px; position: relative; max-width: 1000px; margin: 0 auto; }
 .map-track { width: 100%; height: 100%; position: absolute; inset: 0; pointer-events: none; overflow: visible; }
 .map-track path { fill: none; stroke-width: 3; vector-effect: non-scaling-stroke; }
 .track-base { stroke: var(--control-line); stroke-dasharray: 3 8; }
 .track-progress { stroke: var(--accent); stroke-linecap: round; opacity: .8; }
+.chapter-divider {
+  position: relative; display: flex; align-items: center; justify-content: center; gap: 12px;
+  height: calc(var(--trail-row) / 2); margin: 0; color: var(--muted);
+  font: .79rem/1.4 var(--mono); letter-spacing: normal; text-align: center;
+}
+.chapter-divider::before, .chapter-divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.chapter-divider span { padding: 4px 10px; border-radius: 4px; background: var(--inset); }
 .level-list { padding: 0; margin: 0; list-style: none; position: relative; }
-.level { position: relative; height: 140px; display: flex; align-items: center; padding-left: var(--lane); }
+.level { position: relative; height: var(--trail-row); display: flex; align-items: center; padding-left: var(--lane); }
 .level-link {
   position: relative; display: grid; place-items: center; width: 68px; height: 68px; margin-left: -34px;
   flex: 0 0 68px; border-radius: 50%; border: 1px solid var(--control-line);
@@ -168,7 +177,6 @@ input, select, .code-input { width: 100%; color: var(--ink); background: var(--i
 .level-list:focus-within .level-link:focus-visible { outline-offset: 7px; }
 .map-end { text-align: center; color: var(--muted); padding: 12px 0 20px; font-family: var(--mono); font-size: .85rem; }
 .map-end a { text-decoration: underline; text-underline-offset: 4px; }
-.map-end a + a { margin-inline-start: 16px; }
 
 .lesson-header .back-link { display: inline-block; margin-bottom: 18px; color: var(--accent); font-size: .9rem; }
 .lesson-story, .lesson-body { max-width: 72ch; margin-block: 28px; }
@@ -261,11 +269,14 @@ input, select, .code-input { width: 100%; color: var(--ink); background: var(--i
   .nav-link { padding: 5px 6px; font-size: .8rem; }
   .workspace, .field-note, .lesson-trace-grid { grid-template-columns: minmax(0, 1fr); }
   .trace-code { border-right: 0; border-bottom: 1px solid var(--line); }
-  .map-heading #trail-summary { margin-inline-start: 0; }
+  .map-heading { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 5px 12px; }
+  .map-heading #trail-summary { grid-area: 1 / 2; text-align: right; font-size: .7rem; }
+  .chapter-picker { grid-column: 1 / -1; }
+  .chapter-picker select { width: 100%; max-width: 360px; }
   .workspace { gap: 10px; }
   .brief { padding-bottom: 5px; }
   .field-note { gap: 8px; }
-  .level { height: 126px; }
+  .level-map { --trail-row: 126px; }
   .level-link { width: 56px; height: 56px; flex-basis: 56px; margin-left: -28px; }
   .level-label { left: calc(var(--lane) + 38px); width: 45%; }
   .level[data-side="left"] .level-label { right: calc(100% - var(--lane) + 38px); }

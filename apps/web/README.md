@@ -14,6 +14,6 @@ npm run dev
 
 Run `npm run build` to generate `dist/` and `npm run preview` to serve the production build locally. The build copies the pinned Pyodide runtime from npm into the site so it can load Python from the same host. GitHub Actions publishes only `dist/` to GitHub Pages after a successful build on `main`.
 
-In Algo Fixes, run the examples, select **Check fix**, and load the first failing input into the custom panel. Change the comparison to `>=` and check again. In Python Trail, open Level 1, run the example, then edit and check the exercise. Check that the completed level is marked when you return to the map. Use the chapter dropdown to jump to levels 21 or 41.
+In Algo Fixes, run the examples, select **Check fix**, and load the first failing input into the custom panel. Change the comparison to `>=` and check again. In Python Trail, open Level 1, run the example, then edit and check the exercise. Check that the completed level is marked when you return to the map. Scroll through the chapter dividers or use the pinned dropdown to jump to a chapter.
 
 The private submission judge and further lessons follow the [roadmap](../../docs/ROADMAP.md).

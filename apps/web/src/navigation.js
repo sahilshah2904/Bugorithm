@@ -8,7 +8,13 @@ const pages = new Map([...document.querySelectorAll('[data-page]')].map((page) =
 const learnPage = pages.get('learn');
 const lessonPage = pages.get('lesson');
 const root = document.documentElement;
+const siteHeader = document.querySelector('.site-header');
 const lanes = [27, 45, 70, 57, 29, 44, 72, 55];
+
+new ResizeObserver(() => {
+  root.style.setProperty('--site-header-height', `${siteHeader.offsetHeight}px`);
+  updateTrack();
+}).observe(siteHeader);
 
 function read(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
@@ -44,12 +50,15 @@ function preference(selector, key, dataAttribute, fallback) {
 preference('#text-setting', 'bugorithm:text-size', 'textSize', 'standard');
 preference('#motion-setting', 'bugorithm:motion', 'motion', 'system');
 
-function updateProgress() {
-  const summary = learnPage.querySelector('#trail-summary');
-  if (!summary) return;
-  const chapter = chapters[Number(learnPage.querySelector('#chapter-select').value) - 1];
+function updateChapterSummary(chapter) {
   const count = chapter.lessons.filter((_, index) => completed.has(chapter.first + index)).length;
-  summary.textContent = `${count} / ${chapter.lessons.length} in chapter · ${completed.size} / ${lessons.length} overall`;
+  learnPage.querySelector('#trail-summary').textContent = `${count} / ${chapter.lessons.length} in chapter · ${completed.size} / ${lessons.length} overall`;
+}
+
+function updateProgress() {
+  const picker = learnPage.querySelector('#chapter-select');
+  if (!picker) return;
+  updateChapterSummary(chapters[Number(picker.value) - 1]);
   learnPage.querySelectorAll('.level-link').forEach((link) => {
     const level = Number(link.dataset.level);
     const passed = completed.has(level);
@@ -64,9 +73,12 @@ function chapterHash(chapter) {
 
 function renderMap(chapter) {
   const row = 140;
-  const height = row * chapter.lessons.length;
-  const points = chapter.lessons.map((_, index) => ({ x: lanes[index % lanes.length] * 10, y: index * row + row / 2 }));
-  const nextChapter = chapters[chapter.number];
+  const divider = row / 2;
+  const height = row * lessons.length + divider * (chapters.length - 1);
+  const points = chapters.flatMap((entry, chapterIndex) => entry.lessons.map((_, index) => {
+    const offset = entry.first - 1 + index;
+    return { x: lanes[offset % lanes.length] * 10, y: offset * row + chapterIndex * divider + row / 2 };
+  }));
   let path = `M ${points[0].x} ${points[0].y}`;
   for (let index = 1; index < points.length; index += 1) {
     const previous = points[index - 1];
@@ -95,35 +107,55 @@ function renderMap(chapter) {
         <path class="track-base" d="${path}"></path>
         <path class="track-progress" d="${path}" clip-path="url(#track-window)"></path>
       </svg>
-      <ol class="level-list" start="${chapter.first}">
-        ${chapter.lessons.map((lesson, index) => {
-          const level = chapter.first + index;
-          return `
-            <li class="level" style="--lane:${points[index].x / 10}%" data-side="${points[index].x < 500 ? 'right' : 'left'}">
-              <a class="level-link" href="#/learn/${level}" id="level-${level}" data-level="${level}" aria-describedby="preview-${level}">${level}</a>
-              <span class="level-label" aria-hidden="true">
-                <strong>${lesson.title}</strong><span class="level-preview">${lesson.preview}</span>
-              </span>
-              <span class="sr-only" id="preview-${level}">${lesson.preview}</span>
-            </li>
-          `;
-        }).join('')}
-      </ol>
+      ${chapters.map((entry, chapterIndex) => `
+        <section class="trail-chapter" id="trail-chapter-${entry.number}" aria-labelledby="trail-chapter-title-${entry.number}">
+          <h2 id="trail-chapter-title-${entry.number}" class="${chapterIndex ? 'chapter-divider' : 'sr-only'}">
+            <span>Chapter ${entry.number} · ${entry.title}</span>
+          </h2>
+          <ol class="level-list" start="${entry.first}">
+            ${entry.lessons.map((lesson, index) => {
+              const level = entry.first + index;
+              const { x } = points[level - 1];
+              return `
+                <li class="level" style="--lane:${x / 10}%" data-side="${x < 500 ? 'right' : 'left'}">
+                  <a class="level-link" href="#/learn/${level}" id="level-${level}" data-level="${level}" aria-describedby="preview-${level}">${level}</a>
+                  <span class="level-label" aria-hidden="true">
+                    <strong>${lesson.title}</strong><span class="level-preview">${lesson.preview}</span>
+                  </span>
+                  <span class="sr-only" id="preview-${level}">${lesson.preview}</span>
+                </li>
+              `;
+            }).join('')}
+          </ol>
+        </section>
+      `).join('')}
     </div>
     <p class="map-end">
-      ${nextChapter ? `<a href="${chapterHash(nextChapter)}">Next chapter →</a>` : ''}
       <a href="https://github.com/sahilshah2904/Bugorithm/blob/main/docs/PYTHON_TRAIL.md">View the 300-level curriculum ↗</a>
     </p>
   `;
   updateProgress();
 }
 
+function trailTop() {
+  return siteHeader.offsetHeight + learnPage.querySelector('.map-heading').offsetHeight + 8;
+}
+
+function jumpToChapter(chapter) {
+  const section = learnPage.querySelector(`#trail-chapter-${chapter.number}`);
+  const top = chapter === chapters[0] ? 0 : window.scrollY + section.getBoundingClientRect().top - trailTop();
+  window.scrollTo({ top, behavior: 'instant' });
+  learnPage.querySelector('#chapter-select').value = chapter.number;
+  updateChapterSummary(chapter);
+  updateTrack();
+}
+
 learnPage.addEventListener('change', (event) => {
   if (event.target.id !== 'chapter-select') return;
   const chapter = chapters[Number(event.target.value) - 1];
-  history.pushState(null, '', chapterHash(chapter));
-  route();
-  learnPage.querySelector('#chapter-select').focus({ preventScroll: true });
+  const hash = chapterHash(chapter);
+  if (location.hash !== hash) history.pushState(null, '', hash);
+  jumpToChapter(chapter);
 });
 
 learnPage.addEventListener('click', (event) => {
@@ -140,6 +172,16 @@ function updateTrack() {
     mapFrame = undefined;
     if (learnPage.hidden || learnPage.inert) return;
     const bounds = learnPage.querySelector('.level-map').getBoundingClientRect();
+    const top = trailTop() + 16;
+    const sections = [...learnPage.querySelectorAll('.trail-chapter')];
+    const atEnd = window.scrollY > 0 && window.scrollY + innerHeight >= root.scrollHeight - 2;
+    const chapterIndex = atEnd ? sections.length - 1 : sections.findLastIndex((section) => section.getBoundingClientRect().top <= top);
+    const chapter = chapters[Math.max(0, chapterIndex)];
+    const picker = learnPage.querySelector('#chapter-select');
+    if (Number(picker.value) !== chapter.number) {
+      picker.value = chapter.number;
+      updateChapterSummary(chapter);
+    }
     const progress = motionEnabled() ? (innerHeight * .72 - bounds.top) / bounds.height : 1;
     const height = learnPage.querySelector('.map-track').viewBox.baseVal.height;
     learnPage.querySelector('#track-window rect').setAttribute('height', Math.max(0, Math.min(1, progress)) * height);
@@ -294,7 +336,7 @@ function route(focus = false, marker) {
   const chapter = value === 'chapter'
     ? chapters.find((entry) => String(entry.number) === chapterNumber) ?? chapters[0]
     : chapters[0];
-  const returningToMap = key === 'learn' && !lessonPage.hidden && chapterForLevel(lastLevel) === chapter;
+  const returningToMap = key === 'learn' && !lessonPage.hidden;
   const revealLesson = marker && isLesson && motionEnabled() ? startReactor(marker, learnPage) : undefined;
   pages.forEach((element) => { element.hidden = element !== page && !(revealLesson && element === learnPage); });
   if (key === 'learn') renderMap(chapter);
@@ -314,7 +356,8 @@ function route(focus = false, marker) {
     node.focus({ preventScroll: true });
     node.scrollIntoView({ block: 'center', behavior: 'instant' });
   } else {
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (key === 'learn') jumpToChapter(chapter);
+    else window.scrollTo({ top: 0, behavior: 'instant' });
     if (focus) heading.focus({ preventScroll: true });
   }
   if (location.hash === '#field-note') document.querySelector('#field-note').scrollIntoView();
