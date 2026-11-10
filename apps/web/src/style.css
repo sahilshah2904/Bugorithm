@@ -1,17 +1,17 @@
 :root {
   color-scheme: dark;
-  --bg: #1d2d46;
-  --surface: #2d3b6a;
-  --raised: #384589;
-  --violet: #47366d;
-  --hover: #5a4485;
-  --inset: color-mix(in srgb, var(--bg) 62%, #090d17);
+  --bg: #080b38;
+  --surface: #133155;
+  --raised: #254d70;
+  --violet: #36195b;
+  --hover: #522377;
+  --inset: color-mix(in srgb, var(--bg) 62%, #0e2030);
   --ink: #f1f2f6;
-  --muted: #c2c9df;
-  --line: #535f8d;
-  --control-line: #8796c2;
-  --accent: #c6d2ff;
-  --accent-ink: #17203b;
+  --muted: #c6c9e2;
+  --line: #4a4b79;
+  --control-line: #8d91c3;
+  --accent: #dacdff;
+  --accent-ink: #1c143c;
   --success: #b5fa70;
   --mono: "IBM Plex Mono", ui-monospace, monospace;
   font: 17px/1.6 Inter, system-ui, sans-serif;
@@ -66,7 +66,7 @@ nav { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
 }
 .header-status { white-space: nowrap; }
 .signal, .file-dot, .edit-swatch, .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-right: 5px; }
-.signal { box-shadow: 0 0 10px #c6d2ff80; }
+.signal { box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 50%, transparent); }
 main { min-height: calc(100svh - 145px); }
 .page-heading { padding-block: clamp(30px, 5vw, 76px) 23px; }
 .page-heading p:last-child:not(.eyebrow) { color: var(--muted); margin: .4rem 0 0; }
@@ -99,7 +99,7 @@ summary { color: var(--accent); font-weight: 600; }
 .button-light { background: var(--raised); color: var(--ink); }
 .button-light:hover:not(:disabled) { background: var(--hover); }
 .button-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.button-primary:hover:not(:disabled) { background: #e0e6ff; }
+.button-primary:hover:not(:disabled) { background: #ebe3ff; }
 .runner-note { font-size: .8rem; color: var(--muted); margin: 8px 0; }
 .custom { padding: 8px 0; border-block: 1px solid var(--line); }
 .custom form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(80px, .4fr) auto; gap: 8px; align-items: end; margin-top: 9px; }

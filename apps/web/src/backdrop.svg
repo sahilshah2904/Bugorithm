@@ -1,38 +1,59 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 960">
   <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#101927"/>
-      <stop offset=".58" stop-color="#1d2d46"/>
-      <stop offset="1" stop-color="#151e31"/>
+    <radialGradient id="night" cx=".77" cy=".42" r=".78">
+      <stop stop-color="#151337"/>
+      <stop offset=".58" stop-color="#080b28"/>
+      <stop offset="1" stop-color="#060918"/>
+    </radialGradient>
+    <linearGradient id="plum" x1="0" x2="1" y1="1" y2="0">
+      <stop stop-color="#100c31"/>
+      <stop offset=".5" stop-color="#36195b"/>
+      <stop offset=".8" stop-color="#522377"/>
+      <stop offset="1" stop-color="#7a428c"/>
     </linearGradient>
-    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#1d2d46"/>
-      <stop offset=".62" stop-color="#2d3b6a"/>
-      <stop offset="1" stop-color="#384589"/>
+    <linearGradient id="blue" x1="0" x2="1" y1="1" y2="0">
+      <stop stop-color="#080b38"/>
+      <stop offset=".58" stop-color="#133155"/>
+      <stop offset="1" stop-color="#254d70"/>
     </linearGradient>
-    <linearGradient id="violet" x1="1" y1="0" x2="0" y2="1">
-      <stop stop-color="#5a4485"/>
-      <stop offset=".52" stop-color="#47366d"/>
-      <stop offset="1" stop-color="#2d3b6a"/>
+    <linearGradient id="shadow" x1="0" x2="1">
+      <stop stop-color="#060918" stop-opacity=".84"/>
+      <stop offset=".45" stop-color="#060918" stop-opacity=".46"/>
+      <stop offset=".77" stop-color="#080b38" stop-opacity=".1"/>
+      <stop offset="1" stop-color="#080b38" stop-opacity=".16"/>
     </linearGradient>
-    <linearGradient id="edge" x1="0" x2="1">
-      <stop stop-color="#bc9af5" stop-opacity="0"/>
-      <stop offset=".62" stop-color="#bc9af5" stop-opacity=".5"/>
-      <stop offset="1" stop-color="#9dbdff" stop-opacity=".8"/>
-    </linearGradient>
-    <linearGradient id="shade" x1="0" x2="1">
-      <stop stop-color="#101927" stop-opacity=".78"/>
-      <stop offset=".53" stop-color="#101927" stop-opacity=".36"/>
-      <stop offset="1" stop-color="#101927" stop-opacity=".12"/>
-    </linearGradient>
+    <g id="leaf">
+      <path d="M0 0C-33-17-55-72-8-150 4-122 44-93 37-58 34-32 12-13 0 0Z"/>
+      <path d="M0 0C-14-41-1-91-8-150 4-122 44-93 37-58 34-32 12-13 0 0Z" fill="#080b38" opacity=".23"/>
+      <path d="M0-1C-8-43 5-80-8-147M-3-24Q-25-34-35-54M-4-45Q-27-59-32-83M-2-66Q-23-82-23-108M-2-89Q-15-100-16-124M-3-32Q16-45 33-66M-2-54Q23-67 28-87M-2-77Q15-88 18-106M-5-101Q4-114 3-125" fill="none" stroke="#c2a6e5" stroke-width="1.2" opacity=".24"/>
+    </g>
+    <g id="sprig">
+      <path d="M0 36C20-36 34-120 24-234" fill="none" stroke="#67638e" stroke-width="2" opacity=".64"/>
+      <use href="#leaf" transform="translate(4 15) rotate(-72) scale(.95 1.02)"/>
+      <use href="#leaf" transform="translate(11 -19) rotate(66) scale(.93 .98)"/>
+      <use href="#leaf" transform="translate(17 -51) rotate(-59) scale(.83 1.03)"/>
+      <use href="#leaf" transform="translate(23 -85) rotate(59) scale(.78 .92)"/>
+      <use href="#leaf" transform="translate(27 -119) rotate(-49) scale(.7 .86)"/>
+      <use href="#leaf" transform="translate(29 -151) rotate(43) scale(.65 .83)"/>
+      <use href="#leaf" transform="translate(28 -187) rotate(2) scale(.64 .86)"/>
+    </g>
   </defs>
-  <path fill="url(#sky)" d="M0 0h1440v960H0z"/>
-  <path fill="url(#blue)" d="M0 0h205l1235 450-386 330z"/>
-  <path fill="#1d2d46" d="m205 0 1235 450v-96L546 0z"/>
-  <path fill="url(#violet)" d="M870 0h570v406z"/>
-  <path fill="#384589" fill-opacity=".58" d="m870 0 570 406-128 48z"/>
-  <path fill="#2d3b6a" d="m1440 406-386 374 386-123z"/>
-  <path fill="#47366d" fill-opacity=".72" d="m1440 657-386 123 386 180z"/>
-  <path fill="none" stroke="url(#edge)" d="m0 0 1054 780 386-374M870 0l570 406m-386 374 386-123"/>
-  <path fill="url(#shade)" d="M0 0h1440v960H0z"/>
+  <path d="M0 0h1440v960H0z" fill="url(#night)"/>
+  <g fill="url(#blue)">
+    <use href="#sprig" transform="translate(92 680) rotate(-31) scale(2)" opacity=".47"/>
+    <use href="#sprig" transform="translate(499 84) rotate(139) scale(1.63)" opacity=".47"/>
+    <use href="#sprig" transform="translate(803 370) rotate(131) scale(1.82)" opacity=".58"/>
+    <use href="#sprig" transform="translate(1428 228) rotate(-104) scale(1.58)" opacity=".86"/>
+    <use href="#sprig" transform="translate(1130 985) rotate(-40) scale(1.65)" opacity=".77"/>
+    <use href="#sprig" transform="translate(1460 842) rotate(-45) scale(1.67)" opacity=".92"/>
+  </g>
+  <g fill="url(#plum)">
+    <use href="#sprig" transform="translate(174 185) rotate(155) scale(1.36)" opacity=".46"/>
+    <use href="#sprig" transform="translate(398 1012) rotate(53) scale(1.49)" opacity=".53"/>
+    <use href="#sprig" transform="translate(1140 -13) rotate(167) scale(1.52)" opacity=".91"/>
+    <use href="#sprig" transform="translate(1462 502) rotate(-76) scale(1.3)" opacity=".59"/>
+    <use href="#sprig" transform="translate(1090 699) rotate(13) scale(1.59)" opacity=".87"/>
+  </g>
+  <use href="#sprig" fill="url(#blue)" transform="translate(1058 975) rotate(41) scale(1.54)" opacity=".96"/>
+  <path d="M0 0h1440v960H0z" fill="url(#shadow)"/>
 </svg>
