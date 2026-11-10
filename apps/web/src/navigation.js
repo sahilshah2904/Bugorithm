@@ -47,12 +47,9 @@ preference('#motion-setting', 'bugorithm:motion', 'motion', 'system');
 function updateProgress() {
   const summary = learnPage.querySelector('#trail-summary');
   if (!summary) return;
-  summary.textContent = `${completed.size} / ${lessons.length} complete overall`;
-  learnPage.querySelectorAll('.chapter-link').forEach((link) => {
-    const chapter = chapters[Number(link.dataset.chapter) - 1];
-    const count = chapter.lessons.filter((_, index) => completed.has(chapter.first + index)).length;
-    link.querySelector('.chapter-progress').textContent = `${count} / ${chapter.lessons.length} complete`;
-  });
+  const chapter = chapters[Number(learnPage.querySelector('#chapter-select').value) - 1];
+  const count = chapter.lessons.filter((_, index) => completed.has(chapter.first + index)).length;
+  summary.textContent = `${count} / ${chapter.lessons.length} in chapter · ${completed.size} / ${lessons.length} overall`;
   learnPage.querySelectorAll('.level-link').forEach((link) => {
     const level = Number(link.dataset.level);
     const passed = completed.has(level);
@@ -78,22 +75,20 @@ function renderMap(chapter) {
     path += ` C ${previous.x} ${mid}, ${current.x} ${mid}, ${current.x} ${current.y}`;
   }
   learnPage.innerHTML = `
-    <header class="page-heading map-heading">
-      <div>
-        <p class="trail-label">Chapter ${chapter.number} · ${chapter.title}</p>
-        <h1 tabindex="-1">Python Trail</h1>
-        <p>Follow each lesson from story to code.</p>
+    <header class="map-heading">
+      <h1 tabindex="-1">Python Trail</h1>
+      <div class="chapter-picker">
+        <label for="chapter-select">Chapter</label>
+        <select id="chapter-select" aria-describedby="trail-summary">
+          ${chapters.map((entry) => `
+            <option value="${entry.number}" ${entry === chapter ? 'selected' : ''}>
+              ${entry.title} · ${entry.first}–${entry.first + entry.lessons.length - 1}
+            </option>
+          `).join('')}
+        </select>
       </div>
       <p id="trail-summary" class="trail-label"></p>
     </header>
-    <nav class="chapter-picker" aria-label="Trail chapters">
-      ${chapters.map((entry) => `
-        <a class="chapter-link" href="${chapterHash(entry)}" data-chapter="${entry.number}" ${entry === chapter ? 'aria-current="page"' : ''}>
-          <span class="chapter-range">${entry.first}–${entry.first + entry.lessons.length - 1}</span>
-          <span><strong>${entry.title}</strong><span class="chapter-progress"></span></span>
-        </a>
-      `).join('')}
-    </nav>
     <div class="level-map">
       <svg class="map-track" viewBox="0 0 1000 ${height}" preserveAspectRatio="none" aria-hidden="true">
         <defs><clipPath id="track-window"><rect width="1000" height="${height}"></rect></clipPath></defs>
@@ -122,6 +117,14 @@ function renderMap(chapter) {
   `;
   updateProgress();
 }
+
+learnPage.addEventListener('change', (event) => {
+  if (event.target.id !== 'chapter-select') return;
+  const chapter = chapters[Number(event.target.value) - 1];
+  history.pushState(null, '', chapterHash(chapter));
+  route();
+  learnPage.querySelector('#chapter-select').focus({ preventScroll: true });
+});
 
 learnPage.addEventListener('click', (event) => {
   const node = event.target.closest('.level-link');

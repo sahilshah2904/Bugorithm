@@ -129,21 +129,18 @@ input, select, .code-input { width: 100%; color: var(--ink); background: var(--i
 #confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 10; }
 #confetti i { position: absolute; top: -18px; width: 8px; height: 13px; border-radius: 2px; }
 
-.map-heading, .lesson-header { border-bottom: 1px solid var(--line); }
-.map-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; }
-.map-heading h1, .lesson-header h1 { font-size: clamp(2.6rem, 5vw, 4.3rem); font-weight: 500; letter-spacing: -.06em; }
-.trail-label { color: var(--muted); font: .84rem/1.5 var(--mono); }
-.map-heading #trail-summary { white-space: nowrap; }
-.chapter-picker { gap: 8px; margin-block: 16px 8px; }
-.chapter-link {
-  display: flex; align-items: center; gap: 10px; padding: 7px 12px;
-  border: 1px solid var(--line); border-radius: 7px; background: var(--inset); font-size: .88rem;
+.lesson-header { border-bottom: 1px solid var(--line); }
+.lesson-header h1 { font-size: clamp(2.6rem, 5vw, 4.3rem); font-weight: 500; letter-spacing: -.06em; }
+.map-heading {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px;
+  padding-block: clamp(18px, 3vw, 38px) 6px;
 }
-.chapter-link:hover { background: var(--surface); }
-.chapter-link[aria-current] { border-color: var(--accent); background: var(--violet); }
-.chapter-range, .chapter-progress { color: var(--muted); font: .75rem/1.45 var(--mono); }
-.chapter-range { min-width: 5ch; text-align: center; }
-.chapter-progress { display: block; }
+.map-heading h1 { margin: 0; font-size: clamp(1.45rem, 2vw, 1.85rem); line-height: 1.2; letter-spacing: -.045em; }
+.trail-label { color: var(--muted); font: .84rem/1.5 var(--mono); }
+.map-heading #trail-summary { margin: 0 0 0 auto; font-size: .76rem; }
+.chapter-picker { display: flex; align-items: center; gap: 8px; max-width: 100%; }
+.chapter-picker label { color: var(--muted); font-size: .82rem; }
+.chapter-picker select { width: auto; min-width: 0; font-size: .88rem; }
 .level-map { position: relative; max-width: 1000px; margin: 0 auto; }
 .map-track { width: 100%; height: 100%; position: absolute; inset: 0; pointer-events: none; overflow: visible; }
 .map-track path { fill: none; stroke-width: 3; vector-effect: non-scaling-stroke; }
@@ -264,8 +261,7 @@ input, select, .code-input { width: 100%; color: var(--ink); background: var(--i
   .nav-link { padding: 5px 6px; font-size: .8rem; }
   .workspace, .field-note, .lesson-trace-grid { grid-template-columns: minmax(0, 1fr); }
   .trace-code { border-right: 0; border-bottom: 1px solid var(--line); }
-  .map-heading { align-items: start; flex-direction: column; gap: 3px; }
-  .chapter-link { flex: 1 0 min(100%, 235px); }
+  .map-heading #trail-summary { margin-inline-start: 0; }
   .workspace { gap: 10px; }
   .brief { padding-bottom: 5px; }
   .field-note { gap: 8px; }
