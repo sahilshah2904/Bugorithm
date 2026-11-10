@@ -17,7 +17,7 @@ function readDraft() {
 }
 
 const syntax = HighlightStyle.define([
-  { tag: tags.keyword, color: '#c3f786' },
+  { tag: tags.keyword, color: '#e4d5ff' },
   { tag: tags.comment, color: 'var(--muted)', fontStyle: 'italic' },
   { tag: tags.number, color: '#f6c294' },
   { tag: tags.string, color: '#b5e8bb' },
@@ -33,8 +33,8 @@ const theme = EditorView.theme({
   '.cm-gutters': { backgroundColor: 'var(--inset)', color: 'var(--muted)', border: 0 },
   '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: 'var(--hover)' },
   '.cm-cursor': { borderLeftColor: '#fff' },
-  '.cm-editable-line': { backgroundColor: 'var(--raised)' },
-  '.cm-selectionBackground, &.cm-focused .cm-selectionBackground, .cm-content ::selection': { background: '#3d4a65' },
+  '.cm-editable-line': { backgroundColor: 'color-mix(in srgb, var(--raised) 45%, var(--inset))' },
+  '.cm-selectionBackground, &.cm-focused .cm-selectionBackground, .cm-content ::selection': { background: 'var(--hover)' },
 }, { dark: true });
 
 const editableLines = ViewPlugin.fromClass(class {

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 960">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#101927"/>
+      <stop offset=".58" stop-color="#1d2d46"/>
+      <stop offset="1" stop-color="#151e31"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#1d2d46"/>
+      <stop offset=".62" stop-color="#2d3b6a"/>
+      <stop offset="1" stop-color="#384589"/>
+    </linearGradient>
+    <linearGradient id="violet" x1="1" y1="0" x2="0" y2="1">
+      <stop stop-color="#5a4485"/>
+      <stop offset=".52" stop-color="#47366d"/>
+      <stop offset="1" stop-color="#2d3b6a"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" x2="1">
+      <stop stop-color="#bc9af5" stop-opacity="0"/>
+      <stop offset=".62" stop-color="#bc9af5" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#9dbdff" stop-opacity=".8"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" x2="1">
+      <stop stop-color="#101927" stop-opacity=".78"/>
+      <stop offset=".53" stop-color="#101927" stop-opacity=".36"/>
+      <stop offset="1" stop-color="#101927" stop-opacity=".12"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#sky)" d="M0 0h1440v960H0z"/>
+  <path fill="url(#blue)" d="M0 0h205l1235 450-386 330z"/>
+  <path fill="#1d2d46" d="m205 0 1235 450v-96L546 0z"/>
+  <path fill="url(#violet)" d="M870 0h570v406z"/>
+  <path fill="#384589" fill-opacity=".58" d="m870 0 570 406-128 48z"/>
+  <path fill="#2d3b6a" d="m1440 406-386 374 386-123z"/>
+  <path fill="#47366d" fill-opacity=".72" d="m1440 657-386 123 386 180z"/>
+  <path fill="none" stroke="url(#edge)" d="m0 0 1054 780 386-374M870 0l570 406m-386 374 386-123"/>
+  <path fill="url(#shade)" d="M0 0h1440v960H0z"/>
+</svg>
