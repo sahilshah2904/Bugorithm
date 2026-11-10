@@ -64,6 +64,6 @@ export function runPythonCase(code, { arrivals, cutoff }, onLoading) {
   return enqueue({ code, input: { arrivals, cutoff } }, onLoading);
 }
 
-export function runPythonSnippet(code, onLoading) {
-  return enqueue({ code, snippet: true }, onLoading);
+export function runPythonSnippet(code, onLoading, check) {
+  return enqueue({ code, snippet: true, check }, onLoading);
 }

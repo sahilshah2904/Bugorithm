@@ -6,7 +6,9 @@ Renamed the learning area to Python Trail and preserved the existing lesson URLs
 
 In v0.0.5, a reactor ripple starts at the selected level and expands as the lesson fades in. Reduced motion opens the lesson immediately. Trace playback advances on click and reserves room for each frame's state and output so the controls stay in place. The Trail prepares Python in a shared worker when the map or a lesson opens. Data Saver defers preparation until a run, and the runner can retry after startup errors or timeouts.
 
-Continue with levels 9–20 from the curriculum. Add the story, runnable example, exercise, and trace frames for each level. Compare the final trace output with the real Python example, then verify that the practice answer completes the level. Preserve existing level numbers so browser progress and deep links still work. [Curriculum](PYTHON_TRAIL.md) · [Live Python Trail](https://sahilshah2904.github.io/Bugorithm/#/learn)
+In v0.0.6, levels 9–50 extend the Trail across First signals, Decisions and repetition, and the first half of Text and sequences. The chapter maps show completion separately and preserve existing lesson links and progress. The new exercises can start with a separate practice draft. The comments exercise checks a Python comment token, and the print formatting exercise checks exact whitespace.
+
+Continue with levels 51–60 to finish Text and sequences. Add their data to the chapter module in `apps/web/src/lessons`. Compare each final trace with the real Python example, and check that an incorrect and a correct practice answer produce the expected feedback. Preserve level numbers for saved progress and deep links. [Curriculum](PYTHON_TRAIL.md) · [Live Python Trail](https://sahilshah2904.github.io/Bugorithm/#/learn)
 
 ## Session recap · 9 November 2026
 

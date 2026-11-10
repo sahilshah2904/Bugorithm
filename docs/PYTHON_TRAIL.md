@@ -1,6 +1,6 @@
 # Python Trail curriculum
 
-300 levels from first statements to advanced Python. Levels 1–8 are playable. Levels 9–300 are the authoring plan, with a distinct scenario, exercise objective, and animation for each level. Chapters 1–4 teach the foundations, 5–9 cover everyday Python, 10–12 cover problem solving and engineering, and 13–15 move into concurrency, applied work, and internals.
+300 levels from first statements to advanced Python. Levels 1–50 are playable. Levels 51–300 are the authoring plan, with a distinct scenario, exercise objective, and animation for each level. Chapters 1–4 teach the foundations, 5–9 cover everyday Python, 10–12 cover problem solving and engineering, and 13–15 move into concurrency, applied work, and internals.
 
 Each full lesson should start with a situation the learner can picture, explain the rule that solves it, and call out a common misunderstanding or edge case. Follow that with a short code example, a trace the learner can replay, and an exercise with a clear expected result. Keep each animation tied to the concept. A loop needs a moving cursor, a closure needs reference arrows, and concurrent work needs a timeline.
 

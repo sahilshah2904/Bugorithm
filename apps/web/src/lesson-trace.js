@@ -6,7 +6,7 @@ export function mountLessonTrace(container, lesson) {
       <div class="trace-inspector">
         <div class="trace-stack trace-explanation"><p aria-live="polite"></p></div>
         <div class="trace-stack"></div>
-        <ol class="trace-sequence" aria-label="Sequence values" hidden></ol>
+        <div class="trace-stack"><ol class="trace-sequence" aria-label="Sequence values" hidden></ol></div>
         <div class="trace-console"><span>Console</span><div class="trace-stack"><pre></pre></div></div>
       </div>
     </div>
@@ -75,7 +75,20 @@ export function mountLessonTrace(container, lesson) {
   });
   stateSlot.append(...states);
 
-  const cells = Array.from({ length: Math.max(...frames.map((frame) => frame.sequence?.items.length ?? 0)) },
+  const sequences = frames.flatMap((frame) => frame.sequence ? [frame.sequence.items] : []);
+  const layouts = new Map(sequences.map((items) => [JSON.stringify(items), items]));
+  for (const items of layouts.values()) {
+    const spacer = document.createElement('ol');
+    spacer.className = 'trace-sequence';
+    spacer.setAttribute('aria-hidden', 'true');
+    for (const item of items) {
+      const cell = document.createElement('li');
+      cell.textContent = item;
+      spacer.append(cell);
+    }
+    sequence.parentElement.append(spacer);
+  }
+  const cells = Array.from({ length: Math.max(0, ...sequences.map((items) => items.length)) },
     () => document.createElement('li'));
   sequence.append(...cells);
   let step = 0;
@@ -101,6 +114,10 @@ export function mountLessonTrace(container, lesson) {
         if (cell.textContent !== item) cell.textContent = item ?? '';
         cell.hidden = item === undefined;
         cell.classList.toggle('trace-edge', index === frame.sequence.edge);
+        const selected = Array.isArray(frame.sequence.active) && frame.sequence.active.includes(index);
+        cell.classList.toggle('trace-selected', selected);
+        if (selected) cell.setAttribute('aria-label', item + ', selected');
+        else cell.removeAttribute('aria-label');
         if (index === frame.sequence.active) cell.setAttribute('aria-current', 'step');
         else cell.removeAttribute('aria-current');
       });

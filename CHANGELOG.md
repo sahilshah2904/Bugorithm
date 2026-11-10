@@ -4,6 +4,12 @@
 
 Track changes here as the next milestone takes shape.
 
+## v0.0.6
+
+- Add 42 Python Trail lessons to reach level 50, with stories, interactive traces, runnable examples, and practice.
+- Split the trail into three chapter maps with chapter progress and direct links.
+- Check Python comments and exact console whitespace in the relevant exercises.
+
 ## v0.0.5
 
 - Open lessons as a reactor ripple spreads from the selected level marker to the edges of the viewport.

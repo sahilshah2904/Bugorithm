@@ -1,4 +1,8 @@
-export const lessons = [
+import { decisions } from './lessons/decisions.js';
+import { firstSignals } from './lessons/first-signals.js';
+import { textAndSequences } from './lessons/text-and-sequences.js';
+
+const basics = [
   {
     title: "Python syntax",
     preview: "Print your first message.",
@@ -118,3 +122,15 @@ export const lessons = [
     ],
   },
 ];
+
+export const chapters = [
+  { number: 1, title: 'First signals', first: 1, lessons: [...basics, ...firstSignals] },
+  { number: 2, title: 'Decisions and repetition', first: 21, lessons: decisions },
+  { number: 3, title: 'Text and sequences', first: 41, lessons: textAndSequences },
+];
+
+export const lessons = chapters.flatMap((chapter) => chapter.lessons);
+
+export function chapterForLevel(level) {
+  return chapters.find(({ first, lessons }) => first <= level && level < first + lessons.length);
+}

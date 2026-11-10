@@ -1,4 +1,4 @@
-import { lessons } from './lessons.js';
+import { chapterForLevel, chapters, lessons } from './lessons.js';
 import { mountLessonTrace } from './lesson-trace.js';
 import { motionEnabled, revealPage, startReactor, stopCelebration, stopReactor } from './motion.js';
 import { preparePython, runPythonSnippet } from './python.js';
@@ -45,20 +45,31 @@ preference('#text-setting', 'bugorithm:text-size', 'textSize', 'standard');
 preference('#motion-setting', 'bugorithm:motion', 'motion', 'system');
 
 function updateProgress() {
-  const summary = learnPage.querySelector('#map-summary');
+  const summary = learnPage.querySelector('#trail-summary');
   if (!summary) return;
-  summary.textContent = `${completed.size} / ${lessons.length} complete`;
-  learnPage.querySelectorAll('.level-link').forEach((link, index) => {
-    const passed = completed.has(index + 1);
+  summary.textContent = `${completed.size} / ${lessons.length} complete overall`;
+  learnPage.querySelectorAll('.chapter-link').forEach((link) => {
+    const chapter = chapters[Number(link.dataset.chapter) - 1];
+    const count = chapter.lessons.filter((_, index) => completed.has(chapter.first + index)).length;
+    link.querySelector('.chapter-progress').textContent = `${count} / ${chapter.lessons.length} complete`;
+  });
+  learnPage.querySelectorAll('.level-link').forEach((link) => {
+    const level = Number(link.dataset.level);
+    const passed = completed.has(level);
     link.dataset.complete = passed;
-    link.setAttribute('aria-label', `Level ${index + 1}, ${lessons[index].title}${passed ? ', complete' : ''}`);
+    link.setAttribute('aria-label', `Level ${level}, ${lessons[level - 1].title}${passed ? ', complete' : ''}`);
   });
 }
 
-function renderMap() {
+function chapterHash(chapter) {
+  return chapter.number === 1 ? '#/learn' : `#/learn/chapter/${chapter.number}`;
+}
+
+function renderMap(chapter) {
   const row = 140;
-  const height = row * lessons.length;
-  const points = lessons.map((_, index) => ({ x: lanes[index % lanes.length] * 10, y: index * row + row / 2 }));
+  const height = row * chapter.lessons.length;
+  const points = chapter.lessons.map((_, index) => ({ x: lanes[index % lanes.length] * 10, y: index * row + row / 2 }));
+  const nextChapter = chapters[chapter.number];
   let path = `M ${points[0].x} ${points[0].y}`;
   for (let index = 1; index < points.length; index += 1) {
     const previous = points[index - 1];
@@ -69,31 +80,45 @@ function renderMap() {
   learnPage.innerHTML = `
     <header class="page-heading map-heading">
       <div>
-        <p class="trail-label">Chapter 1 · First signals</p>
+        <p class="trail-label">Chapter ${chapter.number} · ${chapter.title}</p>
         <h1 tabindex="-1">Python Trail</h1>
         <p>Follow each lesson from story to code.</p>
       </div>
-      <p id="map-summary" class="trail-label"></p>
+      <p id="trail-summary" class="trail-label"></p>
     </header>
+    <nav class="chapter-picker" aria-label="Trail chapters">
+      ${chapters.map((entry) => `
+        <a class="chapter-link" href="${chapterHash(entry)}" data-chapter="${entry.number}" ${entry === chapter ? 'aria-current="page"' : ''}>
+          <span class="chapter-range">${entry.first}–${entry.first + entry.lessons.length - 1}</span>
+          <span><strong>${entry.title}</strong><span class="chapter-progress"></span></span>
+        </a>
+      `).join('')}
+    </nav>
     <div class="level-map">
       <svg class="map-track" viewBox="0 0 1000 ${height}" preserveAspectRatio="none" aria-hidden="true">
         <defs><clipPath id="track-window"><rect width="1000" height="${height}"></rect></clipPath></defs>
         <path class="track-base" d="${path}"></path>
         <path class="track-progress" d="${path}" clip-path="url(#track-window)"></path>
       </svg>
-      <ol class="level-list">
-        ${lessons.map((lesson, index) => `
-          <li class="level" style="--lane:${points[index].x / 10}%" data-side="${points[index].x < 500 ? 'right' : 'left'}">
-            <a class="level-link" href="#/learn/${index + 1}" id="level-${index + 1}" aria-describedby="preview-${index + 1}">${index + 1}</a>
-            <span class="level-label" aria-hidden="true">
-              <strong>${lesson.title}</strong><span class="level-preview">${lesson.preview}</span>
-            </span>
-            <span class="sr-only" id="preview-${index + 1}">${lesson.preview}</span>
-          </li>
-        `).join('')}
+      <ol class="level-list" start="${chapter.first}">
+        ${chapter.lessons.map((lesson, index) => {
+          const level = chapter.first + index;
+          return `
+            <li class="level" style="--lane:${points[index].x / 10}%" data-side="${points[index].x < 500 ? 'right' : 'left'}">
+              <a class="level-link" href="#/learn/${level}" id="level-${level}" data-level="${level}" aria-describedby="preview-${level}">${level}</a>
+              <span class="level-label" aria-hidden="true">
+                <strong>${lesson.title}</strong><span class="level-preview">${lesson.preview}</span>
+              </span>
+              <span class="sr-only" id="preview-${level}">${lesson.preview}</span>
+            </li>
+          `;
+        }).join('')}
       </ol>
     </div>
-    <p class="map-end"><a href="https://github.com/sahilshah2904/Bugorithm/blob/main/docs/PYTHON_TRAIL.md">View the 300-level curriculum ↗</a></p>
+    <p class="map-end">
+      ${nextChapter ? `<a href="${chapterHash(nextChapter)}">Next chapter →</a>` : ''}
+      <a href="https://github.com/sahilshah2904/Bugorithm/blob/main/docs/PYTHON_TRAIL.md">View the 300-level curriculum ↗</a>
+    </p>
   `;
   updateProgress();
 }
@@ -113,7 +138,8 @@ function updateTrack() {
     if (learnPage.hidden || learnPage.inert) return;
     const bounds = learnPage.querySelector('.level-map').getBoundingClientRect();
     const progress = motionEnabled() ? (innerHeight * .72 - bounds.top) / bounds.height : 1;
-    learnPage.querySelector('#track-window rect').setAttribute('height', Math.max(0, Math.min(1, progress)) * lessons.length * 140);
+    const height = learnPage.querySelector('.map-track').viewBox.baseVal.height;
+    learnPage.querySelector('#track-window rect').setAttribute('height', Math.max(0, Math.min(1, progress)) * height);
   });
 }
 
@@ -123,10 +149,13 @@ matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', update
 
 function renderLesson(level) {
   const lesson = lessons[level - 1];
+  const chapter = chapterForLevel(level);
+  const mapHash = chapterHash(chapter);
+  const starter = lesson.starter ?? lesson.example;
   lessonPage.innerHTML = `
     <header class="page-heading lesson-header">
-      <a class="back-link" href="#/learn">← Python Trail</a>
-      <p class="trail-label">Level ${level} · First signals</p>
+      <a class="back-link" href="${mapHash}">← Python Trail</a>
+      <p class="trail-label">Level ${level} · ${chapter.title}</p>
       <h1 tabindex="-1">${lesson.title}</h1>
     </header>
     <section class="lesson-story" aria-labelledby="story-heading">
@@ -144,7 +173,7 @@ function renderLesson(level) {
         </div>
         <p id="lesson-status" class="status" role="status">${completed.has(level) ? 'Level complete' : ''}</p>
         <pre class="lesson-output" id="practice-output" aria-label="Practice output" hidden></pre>
-        <a class="lesson-next" href="${level < lessons.length ? `#/learn/${level + 1}` : '#/learn'}">${level < lessons.length ? 'Next level →' : 'Back to the map →'}</a>
+        <a class="lesson-next" href="${level < lessons.length ? `#/learn/${level + 1}` : mapHash}">${level < lessons.length ? 'Next level →' : 'Back to the map →'}</a>
       </section>
     </div>
   `;
@@ -167,7 +196,7 @@ function renderLesson(level) {
   traceControls.append(exampleButton);
   traceControls.after(exampleOutput);
   const editor = find('#lesson-code');
-  editor.value = lesson.example;
+  editor.value = starter;
   const checkButton = find('#check-lesson');
   const reset = find('#reset-lesson');
   const status = find('#lesson-status');
@@ -180,11 +209,16 @@ function renderLesson(level) {
     [exampleButton, checkButton, reset].forEach((button) => { button.disabled = true; });
     const code = isPractice ? editor.value : lesson.example;
     try {
-      const result = await runPythonSnippet(code, () => { output.textContent = 'Starting Python…'; });
+      const check = isPractice ? lesson.check : undefined;
+      const result = await runPythonSnippet(code, () => { output.textContent = 'Starting Python…'; }, check);
       output.textContent = result.error ?? (result.output || '(No output)');
       if (isPractice && editor.value === code) {
-        const pass = !result.error && result.output.replace(/\n$/, '') === lesson.expected;
-        status.textContent = pass ? 'Passed · Level complete' : 'Try again · Compare the output with the prompt';
+        const actual = lesson.exactOutput ? result.output : result.output?.replace(/\n$/, '');
+        const correctOutput = !result.error && actual === lesson.expected;
+        const pass = correctOutput && (!check || result.checks?.[check]);
+        status.textContent = pass ? 'Passed · Level complete' : correctOutput && check === 'comment'
+          ? 'Add a Python comment explaining the message.'
+          : 'Try again · Compare the output with the prompt';
         status.dataset.tone = pass ? 'pass' : 'fail';
         if (pass) {
           completed.add(level);
@@ -210,7 +244,7 @@ function renderLesson(level) {
   exampleButton.addEventListener('click', () => run(false));
   checkButton.addEventListener('click', () => run(true));
   reset.addEventListener('click', () => {
-    editor.value = lesson.example;
+    editor.value = starter;
     status.textContent = '';
     practiceOutput.hidden = true;
     editor.focus();
@@ -249,15 +283,18 @@ function route(focus = false, marker) {
   stopReactor();
   stopTrace?.();
   stopTrace = undefined;
-  const [requested, value] = location.hash.replace(/^#\//, '').split('/');
+  const [requested, value, chapterNumber] = location.hash.replace(/^#\//, '').split('/');
   const level = /^\d+$/.test(value ?? '') ? Number(value) : 0;
   const isLesson = requested === 'learn' && level >= 1 && level <= lessons.length;
   const key = isLesson ? 'lesson' : pages.has(requested) && requested !== 'lesson' ? requested : 'fixes';
   const page = pages.get(key);
-  const returningToMap = key === 'learn' && !lessonPage.hidden && lastLevel;
+  const chapter = value === 'chapter'
+    ? chapters.find((entry) => String(entry.number) === chapterNumber) ?? chapters[0]
+    : chapters[0];
+  const returningToMap = key === 'learn' && !lessonPage.hidden && chapterForLevel(lastLevel) === chapter;
   const revealLesson = marker && isLesson && motionEnabled() ? startReactor(marker, learnPage) : undefined;
   pages.forEach((element) => { element.hidden = element !== page && !(revealLesson && element === learnPage); });
-  if (key === 'learn') renderMap();
+  if (key === 'learn') renderMap(chapter);
   else if (isLesson) {
     lastLevel = level;
     renderLesson(level);

@@ -22,10 +22,18 @@ def _run():
         program = {"__name__": "__main__" if _snippet else "shuttle"}
         compiled = compile(_code, filename, "exec")
         if _snippet:
+            checks = {}
+            if _check == "comment":
+                from io import StringIO
+                from tokenize import COMMENT, generate_tokens
+                checks["comment"] = any(
+                    token.type == COMMENT and token.string[1:].strip()
+                    for token in generate_tokens(StringIO(_code).readline)
+                )
             output = _Output()
             with _redirect_stdout(output):
                 exec(compiled, program)
-            return _json.dumps({"output": output.text})
+            return _json.dumps({"output": output.text, "checks": checks})
         case = _json.loads(_input)
         exec(compiled, program)
         result = program["arrivals_before"](case["arrivals"], case["cutoff"])
@@ -54,7 +62,12 @@ self.onmessage = async ({ data }) => {
       self.postMessage({ ready: true });
       return;
     }
-    const scope = python.toPy({ _code: data.code, _input: JSON.stringify(data.input ?? null), _snippet: Boolean(data.snippet) });
+    const scope = python.toPy({
+      _code: data.code,
+      _input: JSON.stringify(data.input ?? null),
+      _snippet: Boolean(data.snippet),
+      _check: data.check ?? '',
+    });
     try {
       const result = python.runPython(evaluate, { globals: scope });
       self.postMessage(JSON.parse(result));
