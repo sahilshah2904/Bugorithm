@@ -141,10 +141,14 @@ function trailTop() {
   return siteHeader.offsetHeight + learnPage.querySelector('.map-heading').offsetHeight + 8;
 }
 
-function jumpToChapter(chapter) {
+function chapterScrollTop(chapter) {
+  if (chapter === chapters[0]) return 0;
   const section = learnPage.querySelector(`#trail-chapter-${chapter.number}`);
-  const top = chapter === chapters[0] ? 0 : window.scrollY + section.getBoundingClientRect().top - trailTop();
-  window.scrollTo({ top, behavior: 'instant' });
+  return window.scrollY + section.getBoundingClientRect().top - trailTop();
+}
+
+function jumpToChapter(chapter) {
+  window.scrollTo({ top: chapterScrollTop(chapter), behavior: 'instant' });
   learnPage.querySelector('#chapter-select').value = chapter.number;
   updateChapterSummary(chapter);
   updateTrack();
@@ -339,7 +343,7 @@ function route(focus = false, marker) {
   const returningToMap = key === 'learn' && !lessonPage.hidden;
   const revealLesson = marker && isLesson && motionEnabled() ? startReactor(marker, learnPage) : undefined;
   pages.forEach((element) => { element.hidden = element !== page && !(revealLesson && element === learnPage); });
-  if (key === 'learn') renderMap(chapter);
+  if (key === 'learn') renderMap(returningToMap ? chapterForLevel(lastLevel) : chapter);
   else if (isLesson) {
     lastLevel = level;
     renderLesson(level);
@@ -353,8 +357,11 @@ function route(focus = false, marker) {
   document.title = `${heading.textContent} | Bugorithm`;
   if (returningToMap) {
     const node = document.querySelector(`#level-${lastLevel}`);
+    const bounds = node.getBoundingClientRect();
+    const centered = window.scrollY + bounds.top + (bounds.height - innerHeight) / 2;
+    const top = Math.max(chapterScrollTop(chapterForLevel(lastLevel)), centered);
     node.focus({ preventScroll: true });
-    node.scrollIntoView({ block: 'center', behavior: 'instant' });
+    window.scrollTo({ top, behavior: 'instant' });
   } else {
     if (key === 'learn') jumpToChapter(chapter);
     else window.scrollTo({ top: 0, behavior: 'instant' });
