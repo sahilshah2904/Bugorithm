@@ -8,7 +8,9 @@ In v0.0.5, a reactor ripple starts at the selected level and expands as the less
 
 In v0.0.6, levels 9–50 extend the Trail across First signals, Decisions and repetition, and the first half of Text and sequences. The chapter maps show completion separately and preserve existing lesson links and progress. The new exercises can start with a separate practice draft. The comments exercise checks a Python comment token, and the print formatting exercise checks exact whitespace.
 
-Continue with levels 51–60 to finish Text and sequences. Add their data to the chapter module in `apps/web/src/lessons`. Compare each final trace with the real Python example, and check that an incorrect and a correct practice answer produce the expected feedback. Preserve level numbers for saved progress and deep links. [Curriculum](PYTHON_TRAIL.md) · [Live Python Trail](https://sahilshah2904.github.io/Bugorithm/#/learn)
+In v0.0.7, levels 51–100 finish Text and sequences and add Collections and value semantics and Functions and program flow. All five chapters share one continuous map. The pinned chapter dropdown jumps to the chosen chapter and updates as the learner scrolls.
+
+Continue with levels 101–120 on files, errors, and debugging. Add the chapter module in `apps/web/src/lessons`. Compare each final trace with the real Python example, and check that an incorrect and a correct practice answer produce the expected feedback. Preserve level numbers for saved progress and deep links. [Curriculum](PYTHON_TRAIL.md) · [Live Python Trail](https://sahilshah2904.github.io/Bugorithm/#/learn)
 
 ## Session recap · 9 November 2026
 

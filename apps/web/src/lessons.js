@@ -1,5 +1,7 @@
+import { collections } from './lessons/collections.js';
 import { decisions } from './lessons/decisions.js';
 import { firstSignals } from './lessons/first-signals.js';
+import { functionsAndFlow } from './lessons/functions.js';
 import { textAndSequences } from './lessons/text-and-sequences.js';
 
 const basics = [
@@ -127,6 +129,8 @@ export const chapters = [
   { number: 1, title: 'First signals', first: 1, lessons: [...basics, ...firstSignals] },
   { number: 2, title: 'Decisions and repetition', first: 21, lessons: decisions },
   { number: 3, title: 'Text and sequences', first: 41, lessons: textAndSequences },
+  { number: 4, title: 'Collections and value semantics', first: 61, lessons: collections },
+  { number: 5, title: 'Functions and program flow', first: 81, lessons: functionsAndFlow },
 ];
 
 export const lessons = chapters.flatMap((chapter) => chapter.lessons);

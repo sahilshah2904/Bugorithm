@@ -1,6 +1,6 @@
 # Web app
 
-Algo Fixes includes the Last shuttle challenge, a CodeMirror editor, public examples, custom inputs, and a step-through explanation. Python Trail offers 50 levels across three chapter maps with editable exercises, real Python output, and local completion tracking. The separate 100 Questions page lists filterable LeetCode references.
+Algo Fixes includes the Last shuttle challenge, a CodeMirror editor, public examples, custom inputs, and a step-through explanation. Python Trail offers 100 levels across five chapters with editable exercises, real Python output, and local completion tracking. The separate 100 Questions page lists filterable LeetCode references.
 
 Python runs in a browser worker using Pyodide. Anime.js animates route changes, level markers, and successful fixes. Text size and motion preferences are available in Settings.
 

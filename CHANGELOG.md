@@ -4,6 +4,12 @@
 
 Track changes here as the next milestone takes shape.
 
+## v0.0.7
+
+- Add levels 51–100 with stories, interactive execution traces, runnable Python examples, and practice tasks.
+- Finish Text and sequences and add Collections and value semantics and Functions and program flow.
+- Connect all five chapters on one scrollable trail with dividers and a pinned chapter dropdown.
+
 ## v0.0.6
 
 - Add 42 Python Trail lessons to reach level 50, with stories, interactive traces, runnable examples, and practice.
