@@ -3,12 +3,12 @@
 Bugorithm is an untimed Python 3 lab for learning concepts and repairing short programs. [Open Bugorithm](https://sahilshah2904.github.io/Bugorithm/) · [v0.0.7 release](https://github.com/sahilshah2904/Bugorithm/releases/tag/v0.0.7)
 
 - **Algo Fixes** includes the Last Shuttle challenge. Edit between the markers, run examples or custom input, and check your fix against five browser-side sample cases. The first failure exposes its input. A full pass opens the walkthrough and celebration.
-- **Python Trail** offers 100 playable levels across five chapters, from syntax and loops through collections, closures, and recursion. Open a level to read its story, step through an animated execution trace, and test your own code. Chapter progress is saved in your browser. [300-level curriculum](docs/PYTHON_TRAIL.md)
+- **Python Trail** offers 100 playable levels across five chapters, from syntax and loops through collections, closures, and recursion. Scroll one continuous trail or use the pinned chapter dropdown to jump ahead. Each level has a story, an interactive execution trace, a runnable Python example, and an editable exercise. Progress is saved in your browser. [Open Python Trail](https://sahilshah2904.github.io/Bugorithm/#/learn) · [300-level curriculum](docs/PYTHON_TRAIL.md)
 - **100 Questions** lists searchable, filterable links to interview problems. **About** introduces the project and **Settings** saves text size and motion preferences.
 
 ## What's next
 
-Continue Python Trail with levels 101–120 on files, errors, and debugging. The broader roadmap covers private grading for Last Shuttle, the original debugging challenge bank, and the separate interview practice track. [Project handoff](docs/HANDOFF.md) · [Roadmap](docs/ROADMAP.md)
+Resume Python Trail at level 101, Reading a traceback. Levels 101–120 cover errors, file I/O, input validation, and breakpoints. The broader roadmap covers private grading for Last Shuttle, the original debugging challenge bank, and the separate interview practice track. [Project handoff](docs/HANDOFF.md) · [Roadmap](docs/ROADMAP.md)
 
 ## Reproduce the current milestone
 
@@ -23,7 +23,7 @@ npm ci
 npm run dev
 ```
 
-Open the local address printed by Vite. See the [web app README](apps/web/README.md) for the production build and a walkthrough of the sample. Use `git switch main` to return to ongoing development.
+Open the local address printed by Vite. See the [web app README](apps/web/README.md) for the production build and a walkthrough of the sample. The tag captures the 100-level release. Switch to `main` and pull for the follow-up that keeps the right chapter selected when returning from a lesson.
 
 ## Repository layout
 
