@@ -1,5 +1,6 @@
 import { lessons } from './lessons.js';
-import { motionEnabled, revealPage, stopCelebration } from './motion.js';
+import { mountLessonTrace } from './lesson-trace.js';
+import { motionEnabled, openWithAurora, revealPage, stopAurora, stopCelebration } from './motion.js';
 import { runPythonSnippet } from './python.js';
 import { questions } from './questions.js';
 
@@ -24,9 +25,9 @@ const savedProgress = read(progressKey, []);
 const completed = new Set(Array.isArray(savedProgress)
   ? savedProgress.filter((level) => Number.isInteger(level) && level > 0 && level <= lessons.length)
   : []);
-let observer;
 let mapFrame;
 let lastLevel;
+let stopTrace;
 
 function preference(selector, key, dataAttribute, fallback) {
   const select = document.querySelector(selector);
@@ -67,9 +68,12 @@ function renderMap() {
   }
   learnPage.innerHTML = `
     <header class="page-heading map-heading">
-      <p class="eyebrow">02 / LEARNING PATH</p>
-      <h1 tabindex="-1">Python Learn</h1>
-      <p id="map-summary"></p>
+      <div>
+        <p class="trail-label">Chapter 1 · First signals</p>
+        <h1 tabindex="-1">Python Trail</h1>
+        <p>Follow each lesson from story to code.</p>
+      </div>
+      <p id="map-summary" class="trail-label"></p>
     </header>
     <div class="level-map">
       <svg class="map-track" viewBox="0 0 1000 ${height}" preserveAspectRatio="none" aria-hidden="true">
@@ -89,21 +93,17 @@ function renderMap() {
         `).join('')}
       </ol>
     </div>
-    <p class="map-end">More levels ahead</p>
+    <p class="map-end"><a href="https://github.com/sahilshah2904/Bugorithm/blob/main/docs/PYTHON_TRAIL.md">View the 300-level curriculum ↗</a></p>
   `;
   updateProgress();
-  observer?.disconnect();
-  if (motionEnabled()) {
-    observer = new IntersectionObserver((entries) => {
-      entries.forEach(({ isIntersecting, target }) => {
-        if (!isIntersecting) return;
-        revealPage(target);
-        observer.unobserve(target);
-      });
-    }, { threshold: .35 });
-    learnPage.querySelectorAll('.level-link').forEach((node) => observer.observe(node));
-  }
 }
+
+learnPage.addEventListener('click', (event) => {
+  const node = event.target.closest('.level-link');
+  if (!node || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  openWithAurora(node, () => { location.hash = node.hash; });
+});
 
 function updateTrack() {
   if (learnPage.hidden || mapFrame) return;
@@ -124,18 +124,15 @@ function renderLesson(level) {
   const lesson = lessons[level - 1];
   lessonPage.innerHTML = `
     <header class="page-heading lesson-header">
-      <a class="back-link" href="#/learn">← Learning path</a>
-      <p class="eyebrow">LEVEL ${String(level).padStart(2, '0')} / ${String(lessons.length).padStart(2, '0')}</p>
+      <a class="back-link" href="#/learn">← Python Trail</a>
+      <p class="trail-label">Level ${level} · First signals</p>
       <h1 tabindex="-1">${lesson.title}</h1>
     </header>
+    <section class="lesson-story" aria-labelledby="story-heading">
+      <h2 id="story-heading">${lesson.storyTitle}</h2>
+    </section>
+    <section class="lesson-trace" aria-label="Execution trace"></section>
     <div class="lesson-body">
-      <section aria-labelledby="concept-heading">
-        <h2 id="concept-heading">The concept</h2>
-        <p>${lesson.concept}</p>
-        <pre class="lesson-example"><code></code></pre>
-        <button class="button button-light" id="run-lesson-example" type="button">Run example</button>
-        <pre class="lesson-output" id="example-output" aria-live="polite" hidden></pre>
-      </section>
       <section aria-labelledby="practice-heading">
         <h2 id="practice-heading">Try it</h2>
         <label for="lesson-code">${lesson.prompt}</label>
@@ -151,17 +148,32 @@ function renderLesson(level) {
     </div>
   `;
   const find = (selector) => lessonPage.querySelector(selector);
-  find('.lesson-example code').textContent = lesson.example;
+  for (const paragraph of lesson.story) {
+    const text = document.createElement('p');
+    text.textContent = paragraph;
+    find('.lesson-story').append(text);
+  }
+  stopTrace = mountLessonTrace(find('.lesson-trace'), lesson);
+  const traceControls = find('.lesson-trace-controls');
+  const exampleButton = document.createElement('button');
+  exampleButton.className = 'button button-light run-trace-example';
+  exampleButton.type = 'button';
+  exampleButton.textContent = 'Run example';
+  const exampleOutput = document.createElement('pre');
+  exampleOutput.className = 'lesson-output';
+  exampleOutput.setAttribute('aria-live', 'polite');
+  exampleOutput.hidden = true;
+  traceControls.append(exampleButton);
+  traceControls.after(exampleOutput);
   const editor = find('#lesson-code');
-  editor.value = lesson.starter;
-  const exampleButton = find('#run-lesson-example');
+  editor.value = lesson.example;
   const checkButton = find('#check-lesson');
   const reset = find('#reset-lesson');
   const status = find('#lesson-status');
   const practiceOutput = find('#practice-output');
 
   async function run(isPractice) {
-    const output = isPractice ? practiceOutput : find('#example-output');
+    const output = isPractice ? practiceOutput : exampleOutput;
     output.hidden = false;
     output.textContent = 'Running Python…';
     [exampleButton, checkButton, reset].forEach((button) => { button.disabled = true; });
@@ -197,7 +209,7 @@ function renderLesson(level) {
   exampleButton.addEventListener('click', () => run(false));
   checkButton.addEventListener('click', () => run(true));
   reset.addEventListener('click', () => {
-    editor.value = lesson.starter;
+    editor.value = lesson.example;
     status.textContent = '';
     practiceOutput.hidden = true;
     editor.focus();
@@ -233,6 +245,9 @@ search.addEventListener('input', renderQuestions);
 topicFilter.addEventListener('change', renderQuestions);
 
 function route(focus = false) {
+  stopAurora();
+  stopTrace?.();
+  stopTrace = undefined;
   const [requested, value] = location.hash.replace(/^#\//, '').split('/');
   const level = /^\d+$/.test(value ?? '') ? Number(value) : 0;
   const isLesson = requested === 'learn' && level >= 1 && level <= lessons.length;
@@ -261,7 +276,7 @@ function route(focus = false) {
     if (focus) heading.focus({ preventScroll: true });
   }
   if (location.hash === '#field-note') document.querySelector('#field-note').scrollIntoView();
-  revealPage(heading);
+  if (key !== 'learn') revealPage(heading);
   updateTrack();
 }
 

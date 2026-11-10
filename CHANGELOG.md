@@ -4,6 +4,13 @@
 
 Track changes here as the next milestone takes shape.
 
+## v0.0.4
+
+- Rename Python Learn to Python Trail and give the map a quieter field-guide style.
+- Add an aurora transition from each level marker and respect reduced motion.
+- Give all eight playable lessons a story and an execution trace with playback, stepping, scrubbing, and speed controls.
+- Publish a 300-level curriculum with a coding task and animation brief for every level.
+
 ## v0.0.3
 
 - Add separate pages for Algo Fixes, Python Learn, 100 Questions, About, and Settings.

@@ -1,14 +1,14 @@
 # Bugorithm
 
-Bugorithm is an untimed Python 3 lab for learning concepts and repairing short programs. The current preview uses a full-width dark layout with larger text and five pages. [Open Bugorithm](https://sahilshah2904.github.io/Bugorithm/) · [v0.0.3 release](https://github.com/sahilshah2904/Bugorithm/releases/tag/v0.0.3)
+Bugorithm is an untimed Python 3 lab for learning concepts and repairing short programs. [Open Bugorithm](https://sahilshah2904.github.io/Bugorithm/) · [v0.0.4 release](https://github.com/sahilshah2904/Bugorithm/releases/tag/v0.0.4)
 
 - **Algo Fixes** includes the Last Shuttle challenge. Edit between the markers, run examples or custom input, and check your fix against five browser-side sample cases. The first failure exposes its input. A full pass opens the walkthrough and celebration.
-- **Python Learn** offers eight levels from syntax through loops. Open a level from the animated map to run an example and check a short exercise. Completion is saved in your browser.
+- **Python Trail** offers eight playable levels from syntax through loops. Open a level to read its story, step through an animated execution trace, and test your own code. Completion is saved in your browser. [300-level curriculum](docs/PYTHON_TRAIL.md)
 - **100 Questions** lists searchable, filterable links to interview problems. **About** introduces the project and **Settings** saves text size and motion preferences.
 
 ## What's next
 
-Connect a private judge to the Last Shuttle flow so Submit can stop at the first hidden failure and return just that case's input for retry. Then grow the original debugging challenge bank, add random selection, and extend Python Learn one topic at a time. The interview library is a separate later track for in-app Fix and Build practice. [Project handoff](docs/HANDOFF.md) · [Roadmap](docs/ROADMAP.md)
+Continue Python Trail with levels 9–20. The broader roadmap covers private grading for Last Shuttle, the original debugging challenge bank, and the separate interview practice track. [Project handoff](docs/HANDOFF.md) · [Roadmap](docs/ROADMAP.md)
 
 ## Reproduce the current milestone
 
@@ -17,7 +17,7 @@ Install Git and Node.js 24. Run these commands from a terminal.
 ```text
 git clone https://github.com/sahilshah2904/Bugorithm.git
 cd Bugorithm
-git switch --detach v0.0.3
+git switch --detach v0.0.4
 cd apps/web
 npm ci
 npm run dev
