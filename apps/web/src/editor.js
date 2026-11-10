@@ -18,23 +18,23 @@ function readDraft() {
 
 const syntax = HighlightStyle.define([
   { tag: tags.keyword, color: '#c3f786' },
-  { tag: tags.comment, color: '#9baea8', fontStyle: 'italic' },
+  { tag: tags.comment, color: 'var(--muted)', fontStyle: 'italic' },
   { tag: tags.number, color: '#f6c294' },
   { tag: tags.string, color: '#b5e8bb' },
   { tag: tags.function(tags.variableName), color: '#99e8e0' },
 ]);
 
 const theme = EditorView.theme({
-  '&': { backgroundColor: '#0b1419', color: '#eef5f3', fontSize: '.94rem' },
-  '&.cm-focused': { outline: '2px solid #b5fa70', outlineOffset: '-2px' },
+  '&': { backgroundColor: 'var(--inset)', color: 'var(--ink)', fontSize: '.94rem' },
+  '&.cm-focused': { outline: '2px solid var(--accent)', outlineOffset: '-2px' },
   '.cm-scroller': { lineHeight: '1.65' },
   '.cm-content': { fontFamily: 'var(--mono)', padding: '13px 0', caretColor: '#fff' },
   '.cm-line': { padding: '0 10px' },
-  '.cm-gutters': { backgroundColor: '#0b1419', color: '#9baea8', border: 0 },
-  '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: '#202c32' },
+  '.cm-gutters': { backgroundColor: 'var(--inset)', color: 'var(--muted)', border: 0 },
+  '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: 'var(--hover)' },
   '.cm-cursor': { borderLeftColor: '#fff' },
-  '.cm-editable-line': { backgroundColor: '#14291f' },
-  '.cm-selectionBackground, &.cm-focused .cm-selectionBackground, .cm-content ::selection': { background: '#31564a' },
+  '.cm-editable-line': { backgroundColor: 'var(--raised)' },
+  '.cm-selectionBackground, &.cm-focused .cm-selectionBackground, .cm-content ::selection': { background: '#3d4a65' },
 }, { dark: true });
 
 const editableLines = ViewPlugin.fromClass(class {
